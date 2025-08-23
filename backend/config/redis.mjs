@@ -2,7 +2,7 @@ import Redis from 'ioredis';
 
 let redis;
 
-export const connectRedis = () => {
+export const ConnectRedis = () => {
     if (!redis) {
         redis = new Redis(process.env.REDIS_URL);
         redis.on('Connect', () => console.log("Redis Connected"));

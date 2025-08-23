@@ -1,29 +1,33 @@
-import express from 'express';
-import helmet from 'helmet'
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import compression from 'compression';
-import morgan from 'morgan';
-import dotev from 'dotenv'
+import express from "express";
+import passport from "./config/passport.mjs";
+import { applySecurity } from "./middlewares/security.mjs";
+import { redisLimiter } from "./middlewares/rateLimit.mjs";
 
-import healthrouter from './routes/health.mjs'
+import healthRoutes from "./routes/health.mjs";
+import authRoutes from "./routes/authRoutes.mjs";
 
-dotev.config()
+const app = express();
 
-const app = express()
-app.set("trust proxy", 1);
+// If behind a proxy like Nginx/Render/Heroku
+// app.set("trust proxy", 1);
 
-app.use(helmet())
-app.use(cors({
-    origin: [process.env.FRONTEND_URL],
-    Credential: true
-}));
-app.use(express.json())
-app.use(cookieParser())
-app.use(compression())
-app.use(morgan('dev'))
+// Apply security middleware stack
+applySecurity(app);
 
-app.use('/api/check/health', healthrouter);
+// Body parser
+app.use(express.json({ limit: "200kb" }));
+
+// Initialize Passport
+app.use(passport.initialize());
+
+// Global rate limiter (applies to all /api routes)
+app.use("/api", redisLimiter());
+
+// Routes
+app.use("/api/health", healthRoutes);
+app.use("/api/auth", authRoutes);
+
+// Fallback root
+app.get("/", (_req, res) => res.send("Quick Show API 🟢"));
 
 export default app;
-

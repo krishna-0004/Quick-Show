@@ -1,27 +1,31 @@
+// server.mjs
+import dotenv from "dotenv";
+dotenv.config();   // ✅ load env first
+
+import http from "http";
 import app from "./app.mjs";
-import dotenv from 'dotenv';
-import http from 'http';
 import { ConnectDB } from "./config/db.mjs";
-import { connectRedis } from "./config/redis.mjs";
+import { ConnectRedis } from "./config/redis.mjs";
+const PORT = process.env.PORT || 4000;
+const server = http.createServer(app);
 
-dotenv.config();
-
-const PORT = process.env.PORT || 5000
-const server = http.createServer(app)
-
-const start = async () => {
+async function start() {
+  try {
     await ConnectDB();
-    connectRedis()
+    await ConnectRedis();
     server.listen(PORT, () => {
-        console.log(`Server running on http://localhost:${PORT}`);
-    })
+      console.log(`🚀 Server running at ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start server:", err);
+    process.exit(1);
+  }
 }
-process.on("SIGINT", async () => {
-  console.log("🛑 Server shutting down...");
-  server.close(() => {
-    console.log("✅ HTTP server closed");
-    process.exit(0);
-  });
+
+// Graceful shutdown
+process.on("SIGINT", () => {
+  console.log("🛑 Shutting down gracefully...");
+  server.close(() => process.exit(0));
 });
 
 start();
