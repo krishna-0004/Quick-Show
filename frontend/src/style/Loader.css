@@ -1,0 +1,30 @@
+/* Dots Loader */
+.dots-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 100vh; /* Full screen center */
+  background: #111; /* Matches navbar theme */
+}
+
+.dots-loader div {
+  width: 12px;
+  height: 12px;
+  background: #facc15;
+  border-radius: 50%;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.dots-loader div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dots-loader div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  to {
+    transform: translateY(-10px);
+  }
+}

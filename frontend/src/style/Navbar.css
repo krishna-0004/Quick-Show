@@ -1,18 +1,14 @@
 /* Navbar base */
 .navbar {
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  background: #111;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  position: sticky;
   top: 0;
-  width: 100%;
   z-index: 1000;
 }
 
-/* Container */
 .nav-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,104 +18,200 @@
 .nav-logo {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #e63946;
+  color: #facc15;
   text-decoration: none;
 }
 
-/* Links */
+/* Links (Desktop) */
 .nav-links {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 1.2rem;
 }
 
 .nav-link {
+  color: #ddd;
   text-decoration: none;
-  color: #333;
   font-size: 1rem;
-  transition: color 0.2s;
+  transition: color 0.3s ease;
 }
 
-.nav-link:hover {
-  color: #e63946;
-}
-
+.nav-link:hover,
 .nav-link.active {
-  font-weight: bold;
-  color: #e63946;
+  color: #facc15;
 }
 
-/* Auth buttons */
+/* Auth Section (Desktop) */
 .nav-auth {
   display: flex;
-  gap: 10px;
+  align-items: center;
 }
 
-.btn {
-  padding: 6px 14px;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.2s;
+.btn.login-btn {
+  background: #facc15;
+  color: #111;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease;
 }
 
-.login-btn {
-  background-color: #e63946;
-  color: white;
+.btn.login-btn:hover {
+  background: #eab308;
 }
 
-.login-btn:hover {
-  background-color: #c71c30;
-}
-
-.signup-btn {
-  background-color: #f1f1f1;
-  color: #333;
-}
-
-.signup-btn:hover {
-  background-color: #ddd;
-}
-
+/* Profile */
 .profile {
   position: relative;
-  display: inline-block;
+  cursor: pointer;
 }
 
 .profile-pic {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  cursor: pointer;
+  border: 2px solid #facc15;
 }
 
 .profile-dropdown {
   position: absolute;
+  top: 48px;
   right: 0;
-  margin-top: 8px;
-  background: white;
-  border: 1px solid #ddd;
+  background: #222;
+  border: 1px solid #333;
   border-radius: 8px;
-  padding: 8px 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  z-index: 10;
+  padding: 0.6rem;
+  min-width: 160px;
+  text-align: left;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .profile-name {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  font-weight: bold;
+  margin: 0;
+  font-size: 0.95rem;
+  color: #facc15;
+  margin-bottom: 0.5rem;
 }
 
 .logout-btn {
-  background: #ff4d4f;
+  width: 100%;
+  background: #e11d48;
   color: white;
+  padding: 0.4rem;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  transition: background 0.3s;
 }
+
 .logout-btn:hover {
-  background: #e63946;
+  background: #be123c;
+}
+
+/* Hamburger (Mobile) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.hamburger span {
+  height: 3px;
+  background: #fff;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(7px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-7px);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0,0,0,0.6);
+  z-index: 900;
+}
+
+/* Mobile nav links */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    width: 75%;
+    background: #111;
+    flex-direction: column;
+    padding: 4rem 2rem 2rem;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .nav-links.show {
+    left: 0;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links .nav-link {
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
+  }
+
+  /* 👇 Auth at bottom */
+  .nav-auth {
+    margin-top: auto;
+    border-top: 1px solid #333;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* Mobile profile dropdown inside menu */
+@media (max-width: 768px) {
+  .profile-dropdown {
+    position: static;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 0.5rem;
+  }
+
+  .logout-btn {
+    margin-top: 0.8rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
