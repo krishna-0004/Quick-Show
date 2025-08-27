@@ -1,0 +1,125 @@
+/* Navbar base */
+.navbar {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Container */
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.nav-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e63946;
+  text-decoration: none;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #e63946;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  color: #e63946;
+}
+
+/* Auth buttons */
+.nav-auth {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-btn {
+  background-color: #e63946;
+  color: white;
+}
+
+.login-btn:hover {
+  background-color: #c71c30;
+}
+
+.signup-btn {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.signup-btn:hover {
+  background-color: #ddd;
+}
+
+.profile {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.profile-name {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.logout-btn:hover {
+  background: #e63946;
+}
