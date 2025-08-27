@@ -22,14 +22,14 @@ async function start() {
       );
     });
   } catch (err) {
-    console.error("❌ Failed to start server:", err);
+    console.error("Failed to start server:", err);
     process.exit(1);
   }
 }
 
 // Graceful shutdown handler
 async function shutdown(signal) {
-  console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
+  console.log(`\nReceived ${signal}, shutting down gracefully...`);
 
   server.close(async () => {
     try {
@@ -37,10 +37,10 @@ async function shutdown(signal) {
       const redis = getRedis();
       if (redis) {
         await redis.quit();
-        console.log("✅ Redis connection closed");
+        console.log("Redis connection closed");
       }
     } catch (err) {
-      console.error("⚠️ Error during shutdown:", err);
+      console.error("Error during shutdown:", err);
     } finally {
       process.exit(0);
     }

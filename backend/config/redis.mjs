@@ -6,13 +6,13 @@ let redis;
 export const ConnectRedis = () => {
   if (!redis) {
     redis = new Redis(process.env.REDIS_URL, {
-      // Optional: better defaults
+      // optional: better defaults
       maxRetriesPerRequest: null,
       enableReadyCheck: true,
     });
 
-    redis.on("connect", () => console.log("✅ Redis connected"));
-    redis.on("error", (err) => console.error("❌ Redis error:", err));
+    redis.on("connect", () => console.log("Redis connected"));
+    redis.on("error", (err) => console.error("Redis error:", err));
   }
   return redis;
 };

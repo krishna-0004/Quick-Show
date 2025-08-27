@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../style/Navbar.css";
+import { api } from "../utils/axios";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -49,7 +50,7 @@ const Navbar = () => {
             </div>
           ) : (
             <a
-              href="http://localhost:4000/api/auth/google"
+              href={`${import.meta.env.VITE_API_URL}/api/auth/google`}
               className="btn login-btn"
             >
               Login
