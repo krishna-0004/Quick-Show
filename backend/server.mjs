@@ -12,13 +12,12 @@ const server = http.createServer(app);
 
 async function start() {
   try {
-    // Initialize DB + Redis before server starts
     await ConnectDB();
     await ConnectRedis();
 
     server.listen(PORT, () => {
       console.log(
-        `🚀 Server running at ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`
+        `Server running at ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`
       );
     });
   } catch (err) {
@@ -27,7 +26,6 @@ async function start() {
   }
 }
 
-// Graceful shutdown handler
 async function shutdown(signal) {
   console.log(`\nReceived ${signal}, shutting down gracefully...`);
 
@@ -47,7 +45,6 @@ async function shutdown(signal) {
   });
 }
 
-// Handle termination signals
 ["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, () => shutdown(signal));
 });

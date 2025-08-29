@@ -55,7 +55,7 @@ export const oauthSuccess = async (req, res) => {
 
   res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
-  return res.redirect(`${process.env.FRONTEND_URL}/auth/success?at=1`);
+  return res.redirect(`${process.env.FRONTEND_URL}/`);
 };
 
 // =======================

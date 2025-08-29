@@ -17,12 +17,10 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        {/* Logo */}
         <Link to="/" className="nav-logo">
           🎬 Quick Show
         </Link>
 
-        {/* Hamburger (Mobile) */}
         <button
           className={`hamburger ${menuOpen ? "active" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -32,7 +30,6 @@ const Navbar = () => {
           <span></span>
         </button>
 
-        {/* Nav links */}
         <div className={`nav-links ${menuOpen ? "show" : ""}`}>
           <NavLink
             to="/"
@@ -56,7 +53,6 @@ const Navbar = () => {
             Booking
           </NavLink>
 
-          {/* Auth Section (Mobile sidebar shows at bottom) */}
           <div className="nav-auth">
             {user ? (
               <div className="profile">
@@ -88,7 +84,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Overlay (mobile when menu open) */}
       {menuOpen && (
         <div className="overlay" onClick={() => setMenuOpen(false)}></div>
       )}

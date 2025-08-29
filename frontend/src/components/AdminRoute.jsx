@@ -14,7 +14,7 @@ const AdminRoute = ({ children }) => {
   }
 
   if (!isAdmin()) {
-    return <Navigate to="/" replace />; // redirect normal users to homepage
+    return <Navigate to="/" replace />;
   }
 
   return children;

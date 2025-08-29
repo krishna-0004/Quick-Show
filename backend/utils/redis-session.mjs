@@ -13,13 +13,7 @@ const rtSetKey = (userId) => `rtidx:${userId}`;
 // Connect to Redis
 const redis = ConnectRedis();
 
-/**
- * Save a refresh token record in Redis.
- * - `userId` → ID of the user
- * - `jti` → unique token identifier (per-device)
- * - `ttlSeconds` → how long this record should live (matches token expiry)
- * - `meta` → optional metadata (ip, userAgent, createdAt)
- */
+ 
 export const saveRefreshRecord = async (userId, jti, ttlSeconds, meta = {}) => {
   const key = rtKey(userId, jti);
 

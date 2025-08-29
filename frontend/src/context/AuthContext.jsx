@@ -55,6 +55,8 @@ export const AuthProvider = ({ children }) => {
     const isAdmin = () => user?.role === "admin";
     const isUser = () => user?.role === "user";
 
+    // if (loading) return <Loader />
+
     return (
         <AuthContext.Provider value={{ user, login, logout, loading, api, isAdmin, isUser }}>
             {children}
