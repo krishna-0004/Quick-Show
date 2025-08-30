@@ -1,58 +1,51 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../style/Navbar.css";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const handleLogout = () => {
     logout();
-    setMenuOpen(false);
     setDropdownOpen(false);
   };
 
+  // Detect resize to switch between mobile/desktop
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <nav className="navbar">
-      <div className="nav-container">
-        <Link to="/" className="nav-logo">
-          🎬 Quick Show
-        </Link>
+    <>
+      {/* === TOP NAVBAR === */}
+      <nav className="navbar">
+        <div className="nav-container">
+          {/* Logo */}
+          <Link to="/" className="nav-logo">
+            🎬 Quick Show
+          </Link>
 
-        <button
-          className={`hamburger ${menuOpen ? "active" : ""}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+          {/* === Desktop Nav Links === */}
+          {!isMobile && (
+            <div className="nav-links">
+              <NavLink to="/" className="nav-link">
+                Home
+              </NavLink>
+              <NavLink to="/movies" className="nav-link">
+                Movies
+              </NavLink>
+              <NavLink to="/booking" className="nav-link">
+                Booking
+              </NavLink>
+            </div>
+          )}
 
-        <div className={`nav-links ${menuOpen ? "show" : ""}`}>
-          <NavLink
-            to="/"
-            className="nav-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/movies"
-            className="nav-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            Movies
-          </NavLink>
-          <NavLink
-            to="/booking"
-            className="nav-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            Booking
-          </NavLink>
-
+          {/* === Auth/Profile === */}
           <div className="nav-auth">
             {user ? (
               <div className="profile">
@@ -75,19 +68,32 @@ const Navbar = () => {
               <a
                 href={`${import.meta.env.VITE_API_URL}/api/auth/google`}
                 className="btn login-btn"
-                onClick={() => setMenuOpen(false)}
               >
                 Login
               </a>
             )}
           </div>
         </div>
-      </div>
+      </nav>
 
-      {menuOpen && (
-        <div className="overlay" onClick={() => setMenuOpen(false)}></div>
+      {/* === BOTTOM NAVBAR (only on mobile) === */}
+      {isMobile && (
+        <div className="bottom-nav">
+          <NavLink to="/" className="bottom-link">
+            <span>🏠</span>
+            <span>Home</span>
+          </NavLink>
+          <NavLink to="/movies" className="bottom-link">
+            <span>🎬</span>
+            <span>Movies</span>
+          </NavLink>
+          <NavLink to="/booking" className="bottom-link">
+            <span>🎟️</span>
+            <span>Booking</span>
+          </NavLink>
+        </div>
       )}
-    </nav>
+    </>
   );
 };
 

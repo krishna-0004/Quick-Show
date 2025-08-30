@@ -10,8 +10,8 @@
 html, body, #root {
   height: 100%;
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
+  background: radial-gradient(circle at top, #141414, #000000); /* dark cinematic */
+  color: #f5f5f5;
 }
 
 a {
@@ -21,4 +21,15 @@ a {
 
 button {
   cursor: pointer;
+  background: #e50914; /* Netflix red */
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #b20710;
 }
