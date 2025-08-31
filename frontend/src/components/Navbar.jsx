@@ -1,19 +1,22 @@
+// src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../style/Navbar.css";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setDropdownOpen(false);
+    navigate("/login");
   };
 
-  // Detect resize to switch between mobile/desktop
+  // Detect screen resize
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
@@ -42,6 +45,11 @@ const Navbar = () => {
               <NavLink to="/booking" className="nav-link">
                 Booking
               </NavLink>
+              {isAdmin?.() && (
+                <NavLink to="/admin" className="nav-link">
+                  Admin
+                </NavLink>
+              )}
             </div>
           )}
 
@@ -58,6 +66,17 @@ const Navbar = () => {
                 {dropdownOpen && (
                   <div className="profile-dropdown">
                     <p className="profile-name">{user.name}</p>
+                    {isAdmin?.() && (
+                      <button
+                        className="dropdown-btn"
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          navigate("/admin");
+                        }}
+                      >
+                        Dashboard
+                      </button>
+                    )}
                     <button className="logout-btn" onClick={handleLogout}>
                       Logout
                     </button>
@@ -76,7 +95,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* === BOTTOM NAVBAR (only on mobile) === */}
+      {/* === BOTTOM NAVBAR (Mobile Only) === */}
       {isMobile && (
         <div className="bottom-nav">
           <NavLink to="/" className="bottom-link">
@@ -91,6 +110,12 @@ const Navbar = () => {
             <span>🎟️</span>
             <span>Booking</span>
           </NavLink>
+          {isAdmin?.() && (
+            <NavLink to="/admin" className="bottom-link">
+              <span>⚙️</span>
+              <span>Admin</span>
+            </NavLink>
+          )}
         </div>
       )}
     </>

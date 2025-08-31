@@ -35,10 +35,17 @@ export const AuthProvider = ({ children }) => {
 
 
 
-    const login = async (token) => {
+    const login = async (token, navigate) => {
         store.setAccessToken(token);
-        const { data } = await api.get('/auth/me');
+        const { data } = await api.get("/auth/me");
         setUser(data.user);
+
+        // Redirect based on role
+        if (data.user.role === "admin") {
+            navigate("/admin");
+        } else {
+            navigate("/");
+        }
     };
 
     const logout = async () => {

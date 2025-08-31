@@ -1,11 +1,19 @@
-import React from 'react'
+// src/components/admin/DashboardLayout.jsx
+import React from "react";
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
+import "../../style/DashboardLayout.css";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }) => {
   return (
-    <div>
-      Hello i am dashboard layout
+    <div className="dashboard-layout">
+      <Sidebar />
+      <div className="main">
+        <Topbar />
+        <div className="content">{children}</div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;

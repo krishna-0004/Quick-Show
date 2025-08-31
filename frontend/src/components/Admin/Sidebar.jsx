@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import "../../style/Sidebar.css"
 
 const Sidebar = () => {
   return (
@@ -7,7 +8,11 @@ const Sidebar = () => {
         <aside className='sidebar'>
             <div className="logo">🎬 Admin</div>
             <nav>
-                <NavLink></NavLink>
+                <NavLink to="/admin" end>Dashboard</NavLink>
+                <NavLink to="/admin/movies" >Movies</NavLink>
+                <NavLink to="/admin/show" >Shows</NavLink>
+                <NavLink to="/admin/booking" >Bookings</NavLink>
+                <NavLink to="/admin/users" >Users</NavLink>
             </nav>
         </aside>
     </div>

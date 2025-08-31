@@ -1,7 +1,6 @@
 // src/components/AdminRoute.jsx
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
-import DashboardHome from "../../pages/admin/DashboardHome.jsx";
 import Loader from "../Loader.jsx"
 
 const AdminRoute = ({ children }) => {

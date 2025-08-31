@@ -1,0 +1,17 @@
+/* src/components/admin/DashboardLayout.css */
+.dashboard-layout {
+  display: flex;
+}
+
+.main {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  padding: 20px;
+  background: #f4f4f4;
+  min-height: calc(100vh - 60px);
+}
