@@ -2,7 +2,7 @@ import React from 'react';
 import Slider from 'react-slick';
 import "../style/HeroSlider.css";
 
-import img1 from "../assets/wallpapers/1.jpeg";
+import img1 from "../assets/wallpapers/1.png";
 import img2 from "../assets/wallpapers/2.jpeg";
 import img3 from "../assets/wallpapers/3.jpeg";
 import img4 from "../assets/wallpapers/4.jpeg";

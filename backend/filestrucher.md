@@ -10,6 +10,11 @@ backend/
 │   ├── rateLimit.mjs
 │   └── security.mjs
 ├── models/
+│   ├── Booking.mjs
+│   ├── Movie.mjs
+│   ├── Payment.mjs
+│   ├── Review.mjs
+│   ├── Show.mjs
 │   └── user-model.mjs
 ├── routes/
 │   ├── health.mjs
