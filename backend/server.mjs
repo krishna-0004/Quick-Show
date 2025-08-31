@@ -1,19 +1,23 @@
 // server.mjs
 import dotenv from "dotenv";
-dotenv.config();   // ✅ load env first
+dotenv.config();   // load env first
 
 import http from "http";
-import app from "./app.mjs";
-import { ConnectDB} from "./config/db.mjs";
+import { ConnectDB } from "./config/db.mjs";
 import { ConnectRedis, getRedis } from "./config/redis.mjs";
 
 const PORT = process.env.PORT || 4000;
-const server = http.createServer(app);
+let server;
 
 async function start() {
   try {
     await ConnectDB();
     await ConnectRedis();
+
+    // Import app *after* Redis is connected
+    const { default: app } = await import("./app.mjs");
+
+    server = http.createServer(app);
 
     server.listen(PORT, () => {
       console.log(
@@ -29,9 +33,8 @@ async function start() {
 async function shutdown(signal) {
   console.log(`\nReceived ${signal}, shutting down gracefully...`);
 
-  server.close(async () => {
+  server?.close(async () => {
     try {
-      // Close Redis
       const redis = getRedis();
       if (redis) {
         await redis.quit();

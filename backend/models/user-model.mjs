@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.index({ email: 1}, { unique: true });
-userSchema.index({ googleId: 1}, { sparse: true });
+// userSchema.index({ email: 1}, { unique: true });
+// userSchema.index({ googleId: 1}, { sparse: true });
 
 export const User = mongoose.model("User", userSchema);

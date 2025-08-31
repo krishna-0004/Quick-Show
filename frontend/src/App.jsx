@@ -5,8 +5,6 @@ import "slick-carousel/slick/slick-theme.css";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/admin/Dashboard";
-import AdminRoute from "./components/AdminRoute";
 import HomePage from "./pages/user/HomePage";
 
 const Movies = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Movies Page</h1>;
@@ -25,14 +23,6 @@ function App() {
               <Booking />
             </ProtectedRoute>
           } />
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <Dashboard />
-              </AdminRoute>
-            }
-          />
         </Routes>
       </div>
     </>
