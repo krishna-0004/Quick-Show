@@ -5,6 +5,7 @@ import { globalLimiter } from "./middlewares/rateLimit.mjs";
 
 import healthRoutes from "./routes/health.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
+import moviesRoutes from "./routes/movieRouter.mjs";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api", globalLimiter);
 // Routes
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/movie", moviesRoutes);
 
 app.get("/", (_req, res) => res.send("Quick Show API 🟢"));
 
