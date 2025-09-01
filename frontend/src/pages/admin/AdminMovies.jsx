@@ -4,12 +4,26 @@ import MovieForm from "../../components/Admin/MovieForm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../style/MovieForm.css";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader";
 
 const AdminMovies = () => {
+  const { user, loading, isAdmin } = useAuth();
+  const navigate = useNavigate();
+
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editMovie, setEditMovie] = useState(null);
+
+  // Redirect if not admin
+  useEffect(() => {
+    if (!loading && !isAdmin()) {
+      toast.error("Unauthorized! Admins only.");
+      navigate("/");
+    }
+  }, [loading, user, navigate, isAdmin]);
 
   const fetchMovies = async () => {
     try {
@@ -20,7 +34,7 @@ const AdminMovies = () => {
     } catch (err) {
       toast.error("Failed to load movies");
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -41,8 +55,10 @@ const AdminMovies = () => {
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    if (isAdmin()) fetchMovies();
+  }, [isAdmin]);
+
+  if (loading) return <Loader />;
 
   return (
     <div className="movie-admin">
@@ -60,7 +76,7 @@ const AdminMovies = () => {
         </button>
       </div>
 
-      {loading ? (
+      {dataLoading ? (
         <p>Loading movies...</p>
       ) : movies.length === 0 ? (
         <p className="no-data">No movies found</p>

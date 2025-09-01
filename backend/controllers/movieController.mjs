@@ -70,23 +70,26 @@ export const updateMovie = async (req, res) => {
 
 
 export const deleteMovie = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const movie = Movie.findById(id);
-        if (!movie) {
-            return res.status(404).json({ message: "Movies not found" });
-        }
-
-        await deleteImage(movie.poster.public_id);
-
-        await movie.deleteOne()
-
-        res.json({ success: true, message: "Movie deleted successfully" });
-    } catch (err) {
-        console.error("Delete Movie Error: ", err);
-        res.status(500).json({ success: false, message: "Server error" });
+    const movie = await Movie.findById(id); // ✅ Added await
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
     }
+
+    // ✅ Only try to delete image if poster exists
+    if (movie.poster && movie.poster.public_id) {
+      await deleteImage(movie.poster.public_id);
+    }
+
+    await movie.deleteOne();
+
+    res.json({ success: true, message: "Movie deleted successfully" });
+  } catch (err) {
+    console.error("Delete Movie Error: ", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 export const getMovies = async (req, res) => {

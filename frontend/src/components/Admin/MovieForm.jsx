@@ -8,7 +8,6 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
     title: movie?.title || "",
     description: movie?.description || "",
     language: movie?.language || "",
-    // ✅ Handle both array or string for genre
     genre: Array.isArray(movie?.genre)
       ? movie.genre.join(", ")
       : movie?.genre || "",
@@ -20,12 +19,12 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
   });
 
   const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false); // ✅ new state
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle local file upload to Cloudinary
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -35,7 +34,7 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
     formData.append(
       "upload_preset",
       import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-    ); // Cloudinary preset
+    );
 
     try {
       setUploading(true);
@@ -50,8 +49,12 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
       );
 
       const data = await res.json();
-      setForm({ ...form, posterUrl: data.secure_url }); // ✅ save URL
-      toast.success("Poster uploaded successfully!");
+      if (data.secure_url) {
+        setForm({ ...form, posterUrl: data.secure_url });
+        toast.success("Poster uploaded successfully!");
+      } else {
+        throw new Error("Invalid Cloudinary response");
+      }
     } catch (err) {
       toast.error("Failed to upload poster");
     } finally {
@@ -59,9 +62,9 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
     }
   };
 
-  // ✅ Ensure genre is always saved as an array
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true); // ✅ disable button immediately
 
     const payload = {
       ...form,
@@ -82,6 +85,8 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
       onSuccess();
     } catch (err) {
       toast.error("Failed to save movie");
+    } finally {
+      setSubmitting(false); // ✅ re-enable after API
     }
   };
 
@@ -90,75 +95,110 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
       <div className="modal-content">
         <h3>{movie ? "Edit Movie" : "Add Movie"}</h3>
         <form onSubmit={handleSubmit}>
+          {/* Title */}
+          <label>Movie Title</label>
           <input
             type="text"
             name="title"
             value={form.title}
             onChange={handleChange}
-            placeholder="Movie Title"
+            placeholder="e.g. 3 Idiots"
             required
           />
+
+          {/* Description */}
+          <label>Description</label>
           <textarea
             name="description"
             value={form.description}
             onChange={handleChange}
-            placeholder="Description"
-          ></textarea>
+            placeholder="e.g. A story of three engineering students navigating life, friendship, and pressure."
+            rows={3}
+          />
+
+          {/* Language */}
+          <label>Language</label>
           <input
             type="text"
             name="language"
             value={form.language}
             onChange={handleChange}
-            placeholder="Language"
+            placeholder="e.g. Hindi"
           />
+
+          {/* Genre */}
+          <label>Genre</label>
           <input
             type="text"
             name="genre"
             value={form.genre}
             onChange={handleChange}
-            placeholder="Genre (comma separated)"
+            placeholder="e.g. Comedy, Drama"
           />
+
+          {/* Duration */}
+          <label>Duration (minutes)</label>
           <input
             type="number"
             name="duration"
             value={form.duration}
             onChange={handleChange}
-            placeholder="Duration (min)"
+            placeholder="e.g. 170"
           />
+
+          {/* Release Date */}
+          <label>Release Date</label>
           <input
             type="date"
             name="releaseDate"
             value={form.releaseDate}
             onChange={handleChange}
           />
+
+          {/* Trailer */}
+          <label>Trailer URL</label>
           <input
             type="url"
             name="trailerUrl"
             value={form.trailerUrl}
             onChange={handleChange}
-            placeholder="Trailer URL"
+            placeholder="e.g. https://youtube.com/watch?v=xvszmNXdM4w"
           />
 
-          {/* ✅ Upload from local */}
+          {/* Poster Upload */}
+          <label>Poster</label>
           <input type="file" accept="image/*" onChange={handleFileChange} />
-          {uploading && <p>Uploading...</p>}
+          {uploading && <p className="uploading">Uploading...</p>}
           {form.posterUrl && (
             <img
               src={form.posterUrl}
               alt="Poster Preview"
-              style={{ width: "120px", marginTop: "10px" }}
+              className="poster-preview"
             />
           )}
 
+          {/* Status */}
+          <label>Status</label>
           <select name="status" value={form.status} onChange={handleChange}>
             <option value="now_showing">Now Showing</option>
             <option value="coming_soon">Coming Soon</option>
             <option value="expired">Expired</option>
           </select>
 
+          {/* Actions */}
           <div className="form-actions">
-            <button type="submit" className="btn-primary" disabled={uploading}>
-              {movie ? "Update" : "Add"}
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={uploading || submitting}
+            >
+              {submitting
+                ? movie
+                  ? "Updating..."
+                  : "Adding..."
+                : movie
+                ? "Update"
+                : "Add"}
             </button>
             <button type="button" onClick={onClose} className="btn-cancel">
               Cancel
