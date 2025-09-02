@@ -16,6 +16,7 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
     trailerUrl: movie?.trailerUrl || "",
     posterUrl: movie?.poster?.url || "",
     status: movie?.status || "coming_soon",
+    bookingStatus: movie?.bookingStatus || "closed",
   });
 
   const [uploading, setUploading] = useState(false);
@@ -183,6 +184,12 @@ const MovieForm = ({ movie, onClose, onSuccess }) => {
             <option value="now_showing">Now Showing</option>
             <option value="coming_soon">Coming Soon</option>
             <option value="expired">Expired</option>
+          </select>
+
+          <label>Booking Status</label>
+          <select name="bookingStatus" value={form.bookingStatus} onChange={handleChange}>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
           </select>
 
           {/* Actions */}

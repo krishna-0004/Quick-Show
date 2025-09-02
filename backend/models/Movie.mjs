@@ -24,6 +24,14 @@ const movieSchema = new mongoose.Schema(
       default: "coming_soon",
       index: true,
     },
+
+    // 🔹 NEW field: admin toggle for bookings
+    bookingStatus: {
+      type: String,
+      enum: ["open", "closed"],
+      default: "closed",
+      index: true,
+    },
   },
   { timestamps: true }
 );

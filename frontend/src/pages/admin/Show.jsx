@@ -115,17 +115,13 @@ const Show = () => {
                 <td>{s.startTime}</td>
                 <td>{s.endTime}</td>
 
-                <td>
-                  {new Date(s.endTime).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </td>
+                {/* ✅ Seats column */}
                 <td>
                   {s.seatCategories
                     .map((c) => `${c.type}: ${c.totalSeats}`)
                     .join(", ")}
                 </td>
+
                 <td>
                   <button onClick={() => handleEdit(s)} className="btn-edit">
                     ✏️ Edit
@@ -138,6 +134,7 @@ const Show = () => {
                   </button>
                 </td>
               </tr>
+
             ))}
           </tbody>
         </table>

@@ -4,7 +4,7 @@ import { uploadImageFromUrl, deleteImage } from "../config/cloudinary.mjs";
 // Add movies
 export const addMovie = async (req, res) => {
     try {
-        const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status } = req.body;
+        const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status, bookingStatus } = req.body;
 
         if (!posterUrl) {
             return res.status(400).json({ message: "Poster URL is required" });
@@ -22,6 +22,7 @@ export const addMovie = async (req, res) => {
             trailerUrl,
             poster,
             status,
+            bookingStatus,
         })
 
         res.status(201).json({ success: true, movie });
@@ -34,7 +35,7 @@ export const addMovie = async (req, res) => {
 export const updateMovie = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status } = req.body;
+    const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status, bookingStatus } = req.body;
 
     const movie = await Movie.findById(id);
     if (!movie) return res.status(404).json({ message: "Movie not found" });
@@ -58,6 +59,7 @@ export const updateMovie = async (req, res) => {
     if (releaseDate) movie.releaseDate = releaseDate;
     if (trailerUrl) movie.trailerUrl = trailerUrl;
     if (status) movie.status = status;
+    if (bookingStatus) movie.bookingStatus = bookingStatus;
 
     await movie.save();
 
@@ -94,10 +96,11 @@ export const deleteMovie = async (req, res) => {
 
 export const getMovies = async (req, res) => {
     try {
-        const { status, language, genre, q } = req.query;
+        const {bookingStatus, status, language, genre, q } = req.query;
 
         const filter = {};
         if (status) filter.status = status;
+        if (bookingStatus) filter.status = bookingStatus
         if (language) filter.language = language;
         if (genre) filter.genre = genre;
         if (q) filter.$text = { $search: q};
