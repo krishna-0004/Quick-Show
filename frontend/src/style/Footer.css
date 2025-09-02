@@ -1,0 +1,139 @@
+.footer {
+  background: #111;
+  color: #fff;
+  padding: 2rem 1rem 1rem;
+  margin-top: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure it never hides behind a fixed bottom navbar */
+@media (max-width: 768px) {
+  .footer {
+    padding-bottom: 4.5rem; /* leave space for bottom navbar */
+  }
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: auto;
+  gap: 2rem;
+}
+
+/* Logo & About */
+.footer-logo h2 {
+  color: #ffcc00;
+  margin-bottom: 0.5rem;
+  font-size: 1.6rem;
+}
+.footer-logo p {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* Links */
+.footer-links h4 {
+  color: #ffcc00;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+.footer-links a {
+  text-decoration: none;
+  color: #aaa;
+  transition: color 0.3s;
+  font-size: 0.95rem;
+}
+.footer-links a:hover {
+  color: #ffcc00;
+}
+
+/* Social */
+.footer-social h4 {
+  color: #ffcc00;
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+.social-icons a {
+  color: #aaa;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+.social-icons a:hover {
+  color: #ffcc00;
+}
+
+/* Bottom */
+.footer-bottom {
+  text-align: center;
+  margin-top: 2rem;
+  border-top: 1px solid #222;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-logo h2 { font-size: 1.3rem; }
+  .footer-logo p { font-size: 0.8rem; }
+
+  .footer-links h4,
+  .footer-social h4 {
+    font-size: 1rem;
+  }
+
+  .footer-links a {
+    font-size: 0.8rem;
+  }
+
+  .social-icons a {
+    font-size: 1rem;
+  }
+
+  .footer-bottom {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-logo h2 { font-size: 1.1rem; }
+  .footer-logo p { font-size: 0.7rem; }
+
+  .footer-links h4,
+  .footer-social h4 {
+    font-size: 0.9rem;
+  }
+
+  .footer-links a {
+    font-size: 0.75rem;
+  }
+
+  .social-icons a {
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom {
+    font-size: 0.7rem;
+  }
+}

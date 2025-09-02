@@ -3,33 +3,33 @@ import { uploadImageFromUrl, deleteImage } from "../config/cloudinary.mjs";
 
 // Add movies
 export const addMovie = async (req, res) => {
-    try {
-        const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status, bookingStatus } = req.body;
+  try {
+    const { title, description, language, genre, duration, releaseDate, trailerUrl, posterUrl, status, bookingStatus } = req.body;
 
-        if (!posterUrl) {
-            return res.status(400).json({ message: "Poster URL is required" });
-        }
-
-        const poster = await uploadImageFromUrl(posterUrl, "movies");
-
-        const movie = await Movie.create({
-            title,
-            description,
-            language,
-            genre,
-            duration,
-            releaseDate,
-            trailerUrl,
-            poster,
-            status,
-            bookingStatus,
-        })
-
-        res.status(201).json({ success: true, movie });
-    } catch (err) {
-        console.error("Add movie error: ", err);
-        res.status(500).json({ success: false, message: "Server error" });
+    if (!posterUrl) {
+      return res.status(400).json({ message: "Poster URL is required" });
     }
+
+    const poster = await uploadImageFromUrl(posterUrl, "movies");
+
+    const movie = await Movie.create({
+      title,
+      description,
+      language,
+      genre,
+      duration,
+      releaseDate,
+      trailerUrl,
+      poster,
+      status,
+      bookingStatus,
+    })
+
+    res.status(201).json({ success: true, movie });
+  } catch (err) {
+    console.error("Add movie error: ", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 export const updateMovie = async (req, res) => {
@@ -95,23 +95,23 @@ export const deleteMovie = async (req, res) => {
 };
 
 export const getMovies = async (req, res) => {
-    try {
-        const {bookingStatus, status, language, genre, q } = req.query;
+  try {
+    const { bookingStatus, status, language, genre, q } = req.query;
 
-        const filter = {};
-        if (status) filter.status = status;
-        if (bookingStatus) filter.status = bookingStatus
-        if (language) filter.language = language;
-        if (genre) filter.genre = genre;
-        if (q) filter.$text = { $search: q};
+    const filter = {};
+    if (status) filter.status = status;
+    if (bookingStatus) filter.bookingStatus = bookingStatus;
+    if (language) filter.language = language;
+    if (genre) filter.genre = genre;
+    if (q) filter.$text = { $search: q };
 
-        const movies = await Movie.find(filter).sort({ releaseDate: -1 });
+    const movies = await Movie.find(filter).sort({ releaseDate: -1 });
 
-        res.json({ success: true, count: movies.length, movies });
-    } catch (err) {
-        console.error("Get Movies Error:", err);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
+    res.json({ success: true, count: movies.length, movies });
+  } catch (err) {
+    console.error("Get Movies Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 export const getMovieById = async (req, res) => {

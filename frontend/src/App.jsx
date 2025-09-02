@@ -16,6 +16,7 @@ import Users from "./pages/admin/Users";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/user/HomePage";
+import Footer from "./components/Footer";
 
 const Movies = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Movies Page</h1>;
 const Booking = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Booking Page</h1>;
@@ -89,6 +90,7 @@ function App() {
 
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
+      <Footer />
     </>
   );
 }
