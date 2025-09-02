@@ -1,5 +1,6 @@
 import { Movie } from "../models/Movie.mjs";
 import { uploadImageFromUrl, deleteImage } from "../config/cloudinary.mjs";
+import { getRedis } from "../config/redis.mjs";
 
 // Add movies
 export const addMovie = async (req, res) => {
@@ -23,7 +24,13 @@ export const addMovie = async (req, res) => {
       poster,
       status,
       bookingStatus,
-    })
+    });
+
+    // ✅ Invalidate movie caches
+    const redis = getRedis();
+    await redis.keys("movies:*").then(keys => {
+      if (keys.length) redis.del(...keys);
+    });
 
     res.status(201).json({ success: true, movie });
   } catch (err) {
@@ -42,15 +49,11 @@ export const updateMovie = async (req, res) => {
 
     // ✅ If poster URL changed, delete old image from Cloudinary
     if (posterUrl && posterUrl !== movie.poster.url) {
-      // Delete old image from cloudinary
       await deleteImage(movie.poster.public_id);
-
-      // Upload new image and replace
       const newPoster = await uploadImageFromUrl(posterUrl, "movies");
       movie.poster = newPoster;
     }
 
-    // Update other fields
     if (title) movie.title = title;
     if (description) movie.description = description;
     if (language) movie.language = language;
@@ -63,6 +66,13 @@ export const updateMovie = async (req, res) => {
 
     await movie.save();
 
+    // ✅ Invalidate cache
+    const redis = getRedis();
+    await redis.del(`movie:${id}`);
+    await redis.keys("movies:*").then(keys => {
+      if (keys.length) redis.del(...keys);
+    });
+
     res.json({ success: true, movie });
   } catch (err) {
     console.error("Update Movie Error:", err);
@@ -70,22 +80,27 @@ export const updateMovie = async (req, res) => {
   }
 };
 
-
 export const deleteMovie = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const movie = await Movie.findById(id); // ✅ Added await
+    const movie = await Movie.findById(id);
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" });
     }
 
-    // ✅ Only try to delete image if poster exists
     if (movie.poster && movie.poster.public_id) {
       await deleteImage(movie.poster.public_id);
     }
 
     await movie.deleteOne();
+
+    // ✅ Invalidate cache
+    const redis = getRedis();
+    await redis.del(`movie:${id}`);
+    await redis.keys("movies:*").then(keys => {
+      if (keys.length) redis.del(...keys);
+    });
 
     res.json({ success: true, message: "Movie deleted successfully" });
   } catch (err) {
@@ -96,8 +111,17 @@ export const deleteMovie = async (req, res) => {
 
 export const getMovies = async (req, res) => {
   try {
-    const { bookingStatus, status, language, genre, q } = req.query;
+    const redis = getRedis();
+    const cacheKey = `movies:${JSON.stringify(req.query)}`;
 
+    // ✅ 1. Check cache
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return res.json(JSON.parse(cached));
+    }
+
+    // ✅ 2. Fetch from DB
+    const { bookingStatus, status, language, genre, q } = req.query;
     const filter = {};
     if (status) filter.status = status;
     if (bookingStatus) filter.bookingStatus = bookingStatus;
@@ -107,7 +131,12 @@ export const getMovies = async (req, res) => {
 
     const movies = await Movie.find(filter).sort({ releaseDate: -1 });
 
-    res.json({ success: true, count: movies.length, movies });
+    const response = { success: true, count: movies.length, movies };
+
+    // ✅ 3. Save to Redis (5 min)
+    await redis.set(cacheKey, JSON.stringify(response), "EX", 300);
+
+    res.json(response);
   } catch (err) {
     console.error("Get Movies Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
@@ -117,13 +146,25 @@ export const getMovies = async (req, res) => {
 export const getMovieById = async (req, res) => {
   try {
     const { id } = req.params;
-    const movie = await Movie.findById(id);
+    const redis = getRedis();
+    const cacheKey = `movie:${id}`;
 
+    // ✅ 1. Check cache
+    const cached = await redis.get(cacheKey);
+    if (cached) return res.json(JSON.parse(cached));
+
+    // ✅ 2. Fetch from DB
+    const movie = await Movie.findById(id);
     if (!movie) {
       return res.status(404).json({ success: false, message: "Movie not found" });
     }
 
-    res.json({ success: true, movie });
+    const response = { success: true, movie };
+
+    // ✅ 3. Cache result (10 min)
+    await redis.set(cacheKey, JSON.stringify(response), "EX", 600);
+
+    res.json(response);
   } catch (err) {
     console.error("Get Movie By ID Error:", err);
     res.status(500).json({ success: false, message: "Server error" });

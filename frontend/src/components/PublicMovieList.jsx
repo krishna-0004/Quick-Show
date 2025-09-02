@@ -119,7 +119,7 @@ const PublicMovieList = ({ bookingStatus, language, genre, q }) => {
         <div className="movie-actions">
           {canBook && (
             <button
-              className="btn-primary"
+              className="button-primary"
               onClick={() => navigate(`/book/${m._id}`)}
             >
               Book Tickets
@@ -130,7 +130,7 @@ const PublicMovieList = ({ bookingStatus, language, genre, q }) => {
               href={m.trailerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary"
+              className="button-secondary"
             >
               🎥 Trailer
             </a>

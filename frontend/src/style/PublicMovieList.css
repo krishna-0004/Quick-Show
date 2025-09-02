@@ -102,8 +102,8 @@
   border-top: 1px solid #222;
 }
 
-.btn-primary,
-.btn-secondary {
+.button-primary,
+.button-secondary {
   flex: 1; /* Equal width */
   text-align: center;
   font-weight: bold;
@@ -113,24 +113,24 @@
   transition: all 0.3s ease;
 }
 
-.btn-primary {
+.button-primary {
   background: #ffcc00;
   color: #000;
   border: none;
 }
 
-.btn-primary:hover {
+.button-primary:hover {
   background: #e6b800;
 }
 
-.btn-secondary {
+.button-secondary {
   background: transparent;
   color: #ffcc00;
   border: 1px solid #ffcc00;
   text-decoration: none;
 }
 
-.btn-secondary:hover {
+.button-secondary:hover {
   background: #ffcc00;
   color: #000;
 }
@@ -149,7 +149,7 @@
   .movie-title { font-size: 1.1rem; }
   .movie-meta, .movie-extra { font-size: 0.85rem; }
   .movie-section-title { font-size: 1.6rem; }
-  .btn-primary, .btn-secondary { font-size: 0.9rem; padding: 7px 12px; }
+  .button-primary, .button-secondary { font-size: 0.9rem; padding: 7px 12px; }
 }
 
 @media (max-width: 992px) {
@@ -157,7 +157,7 @@
   .movie-title { font-size: 1rem; }
   .movie-meta, .movie-extra { font-size: 0.8rem; }
   .movie-section-title { font-size: 1.4rem; }
-  .btn-primary, .btn-secondary { font-size: 0.85rem; padding: 6px 11px; }
+  .button-primary, .button-secondary { font-size: 0.85rem; padding: 6px 11px; }
 }
 
 @media (max-width: 768px) {
@@ -166,7 +166,7 @@
   .movie-meta, .movie-extra { font-size: 0.75rem; }
   .movie-section-title { font-size: 1.2rem; }
   .movie-rating { font-size: 0.9rem; }
-  .btn-primary, .btn-secondary { font-size: 0.8rem; padding: 6px 10px; }
+  .button-primary, .button-secondary { font-size: 0.8rem; padding: 6px 10px; }
 }
 
 @media (max-width: 576px) {
@@ -196,8 +196,8 @@
     gap: 0.5rem;
   }
 
-  .btn-primary,
-  .btn-secondary {
+  .button-primary,
+  .button-secondary {
     width: 100%;
     font-size: 0.8rem;
     padding: 8px 10px;
