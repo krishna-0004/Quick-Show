@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,10 +16,10 @@ import Users from "./pages/admin/Users";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/user/HomePage";
+import BookingPage from "./pages/user/BookingPage";
 import Footer from "./components/Footer";
 
 const Movies = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Movies Page</h1>;
-const Booking = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Booking Page</h1>;
 
 function App() {
   return (
@@ -29,14 +29,17 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/movies" element={<Movies />} />
-          <Route path="/booking" element={
-            <ProtectedRoute>
-              <Booking />
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/book/:movieId"
+            element={
+              <ProtectedRoute>
+                <BookingPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin Routes */}
-          <Route 
+          <Route
             path="/admin"
             element={
               <AdminRoute>
@@ -46,7 +49,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route 
+          <Route
             path="/admin/movies"
             element={
               <AdminRoute>
@@ -56,7 +59,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route 
+          <Route
             path="/admin/booking"
             element={
               <AdminRoute>
@@ -66,7 +69,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route 
+          <Route
             path="/admin/show"
             element={
               <AdminRoute>
@@ -76,7 +79,7 @@ function App() {
               </AdminRoute>
             }
           />
-          <Route 
+          <Route
             path="/admin/users"
             element={
               <AdminRoute>

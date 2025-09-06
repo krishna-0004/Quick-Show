@@ -1,0 +1,152 @@
+/* Seat map container */
+.seat-map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  background: #111;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+}
+
+/* Screen banner */
+.screen {
+  width: 90%;
+  background: linear-gradient(90deg, #ffcc00, #ff9900);
+  text-align: center;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #111;
+  font-size: 1.2rem;
+}
+
+/* Whole seat-map scrolls */
+.seat-map {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  /* ✅ Center on desktop */
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  overflow-x: auto; 
+  padding-bottom: 10px;
+  position: relative;
+}
+
+/* Subtle fade effect (scroll hint only for small screens) */
+@media (max-width: 768px) {
+  .seat-map::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(to left, #111, transparent);
+    pointer-events: none;
+  }
+}
+
+/* Each row */
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: max-content; /* ✅ ensures scrolling if too wide */
+}
+
+/* Sticky row label */
+.row-label {
+  width: 28px;
+  text-align: center;
+  font-weight: bold;
+  flex-shrink: 0;
+  background: #111;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+/* Seat button */
+.seat-btn {
+  width: 32px;
+  height: 32px;
+  background: #333;
+  border: 1px solid #666;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.9rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.3s;
+}
+
+.seat-btn:hover:not(.booked):not(.selected) {
+  background: #ffcc00;
+  color: #111;
+}
+
+.seat-btn.booked {
+  background: #b22222;
+  cursor: not-allowed;
+}
+
+.seat-btn.selected {
+  background: #00c853;
+  border-color: #00c853;
+}
+
+/* 📱 Tablet */
+@media (max-width: 768px) {
+  .seat-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+
+  .row-label {
+    width: 22px;
+    font-size: 0.8rem;
+  }
+}
+
+/* 📱 Mobile */
+@media (max-width: 480px) {
+  .seat-map-container {
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .screen {
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .seat-map {
+    align-items: flex-start; /* ✅ On mobile, align left so scrolling is natural */
+  }
+
+  .seat-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 0.65rem;
+  }
+
+  .row-label {
+    width: 20px;
+    font-size: 0.65rem;
+  }
+}

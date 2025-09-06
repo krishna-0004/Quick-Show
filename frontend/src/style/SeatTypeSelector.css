@@ -1,0 +1,73 @@
+/* src/components/Booking/SeatTypeSelector.css */
+
+.seat-type-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.seat-type-card {
+  flex: 1 1 120px;
+  background: #111;
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border 0.3s, background 0.3s, transform 0.2s;
+}
+
+.seat-type-card.selected {
+  border-color: #ffcc00;
+  background: #222;
+  transform: scale(1.05);
+}
+
+.seat-type-card h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #ffcc00;
+}
+
+.seat-type-card p {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+/* Hover effect */
+.seat-type-card:hover {
+  border-color: #ffcc00;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .seat-type-card {
+    flex: 1 1 45%;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .seat-type-card h4 {
+    font-size: 0.9rem;
+  }
+
+  .seat-type-card p {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .seat-type-card {
+    flex: 1 1 100%;
+  }
+
+  .seat-type-card h4 {
+    font-size: 0.85rem;
+  }
+
+  .seat-type-card p {
+    font-size: 0.7rem;
+  }
+}

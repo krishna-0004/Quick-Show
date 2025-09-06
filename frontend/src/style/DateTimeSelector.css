@@ -1,0 +1,74 @@
+/* src/components/Booking/DateTimeSelector.css */
+
+.date-time-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.date-selector,
+.time-selector {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.date-card,
+.time-card {
+  flex: 1 1 100px;
+  background: #111;
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border 0.3s, background 0.3s, transform 0.2s;
+}
+
+.date-card.selected,
+.time-card.selected {
+  border-color: #ffcc00;
+  background: #222;
+  transform: scale(1.05);
+}
+
+.date-card p,
+.time-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+/* Hover effect */
+.date-card:hover,
+.time-card:hover {
+  border-color: #ffcc00;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .date-card,
+  .time-card {
+    flex: 1 1 45%;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .date-card p,
+  .time-card p {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .date-card,
+  .time-card {
+    flex: 1 1 100%;
+  }
+
+  .date-card p,
+  .time-card p {
+    font-size: 0.7rem;
+  }
+}
