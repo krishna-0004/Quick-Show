@@ -7,6 +7,8 @@ import healthRoutes from "./routes/health.mjs";
 import authRoutes from "./routes/authRoutes.mjs";
 import moviesRoutes from "./routes/movieRouter.mjs";
 import scheduleRouter from "./routes/scheduleRoutes.mjs";
+import bookingRouter from "./routes/bookingRouter.mjs";
+import paymentRouter from "./routes/paymentRouter.mjs";
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/movie", moviesRoutes);
 app.use('/api/show', scheduleRouter);
+app.use("/api/booking", bookingRouter);
+app.use("/api/payment", paymentRouter);
 
 app.get("/", (_req, res) => res.send("Quick Show API 🟢"));
 
