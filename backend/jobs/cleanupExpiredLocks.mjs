@@ -1,29 +1,37 @@
-// jobs/cleanupExpiredLocks.mjs
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
 import { Booking } from "../models/Booking.mjs";
-import { getRedis } from "../config/redis.mjs";
+import { Schedule } from "../models/Schedule.mjs"; // <-- important!
+import { ConnectRedis } from "../config/redis.mjs";
 import { unlockSeats } from "../utils/seatLock.mjs";
 
 const LOCK_TTL_SECONDS = parseInt(process.env.BOOKING_LOCK_TTL_SECONDS || "300", 10);
 
 export const cleanupExpiredLocks = async () => {
-  const cutoff = new Date(Date.now() - LOCK_TTL_SECONDS * 1000); // use env TTL
+  const cutoff = new Date(Date.now() - LOCK_TTL_SECONDS * 1000);
+
+  // Find expired locked bookings
   const expired = await Booking.find({
     bookingStatus: "locked",
     lockedAt: { $lt: cutoff },
   }).populate("scheduleId");
 
-  if (expired.length) {
-    console.log(`Cleaning up ${expired.length} expired locks`);
+  if (!expired.length) {
+    console.log("No expired locks found");
+    return;
   }
 
-  const redis = getRedis();
+  console.log(`Cleaning up ${expired.length} expired locks`);
+
+  const redis = ConnectRedis();
 
   for (const booking of expired) {
     const redisKey = `lock:booking:${booking._id}`;
     const exists = await redis.exists(redisKey);
 
-    // Unlock seats in Redis, log errors but continue
+    // Unlock seats in Redis
     if (booking.scheduleId && booking.seats.length) {
       try {
         await unlockSeats(booking.scheduleId._id, booking.seats);

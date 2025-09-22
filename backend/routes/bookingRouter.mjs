@@ -1,3 +1,4 @@
+//bookingROuter.mjs
 import express from "express";
 import { requireAuth } from "../middlewares/auth.mjs";
 import { postLock } from "../controllers/lockController.mjs";

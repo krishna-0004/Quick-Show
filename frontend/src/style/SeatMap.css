@@ -31,11 +31,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  /* ✅ Center on desktop */
   justify-content: center;
   align-items: center;
-
   width: 100%;
   overflow-x: auto; 
   padding-bottom: 10px;
@@ -61,7 +58,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  min-width: max-content; /* ✅ ensures scrolling if too wide */
+  min-width: max-content;
 }
 
 /* Sticky row label */
@@ -76,7 +73,7 @@
   z-index: 3;
 }
 
-/* Seat button */
+/* Seat button (base) */
 .seat-btn {
   width: 32px;
   height: 32px;
@@ -91,23 +88,38 @@
   align-items: center;
   justify-content: center;
 
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
-.seat-btn:hover:not(.booked):not(.selected) {
+/* Available = blue-gray */
+.seat-btn.available {
+  background: #444;
+  border-color: #666;
+  color: #fff;
+}
+
+/* Hover only for available */
+.seat-btn.available:hover {
   background: #ffcc00;
   color: #111;
+  border-color: #ffcc00;
 }
 
+/* Booked = red */
 .seat-btn.booked {
   background: #b22222;
+  border-color: #b22222;
   cursor: not-allowed;
+  color: #fff;
 }
 
+/* Selected = green */
 .seat-btn.selected {
   background: #00c853;
   border-color: #00c853;
+  color: #fff;
 }
+
 
 /* 📱 Tablet */
 @media (max-width: 768px) {
@@ -136,7 +148,7 @@
   }
 
   .seat-map {
-    align-items: flex-start; /* ✅ On mobile, align left so scrolling is natural */
+    align-items: flex-start;
   }
 
   .seat-btn {

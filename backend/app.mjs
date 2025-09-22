@@ -12,25 +12,33 @@ import paymentRouter from "./routes/paymentRouter.mjs";
 
 const app = express();
 
-// app.set("trust proxy", 1);
-
 // Security middleware
 applySecurity(app);
 
-// Body parser
+// ⚠️ Razorpay webhook raw body
+app.use(
+  "/api/payment/razorpay/webhook",
+  express.raw({ type: "application/json" }),
+  (req, _res, next) => {
+    req.rawBody = req.body; // save the raw buffer for signature verification
+    next();
+  }
+);
+
+// JSON parser for all other routes
 app.use(express.json({ limit: "200kb" }));
 
 // Passport
 app.use(passport.initialize());
 
-// Global rate limiter (created ONCE at startup)
+// Global rate limiter
 app.use("/api", globalLimiter);
 
 // Routes
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/movie", moviesRoutes);
-app.use('/api/show', scheduleRouter);
+app.use("/api/show", scheduleRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/payment", paymentRouter);
 

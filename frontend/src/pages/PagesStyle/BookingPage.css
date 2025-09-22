@@ -58,7 +58,7 @@
   transition: all 0.25s ease-in-out;
 }
 
-/* Primary button (golden) */
+/* Generic golden button */
 .booking-page button.active,
 .booking-page button:not(.secondary) {
   background: #ffcc00;
@@ -86,6 +86,29 @@
 /* Active highlight */
 .booking-page button.active {
   box-shadow: 0 0 15px #ffcc00, 0 0 25px rgba(255, 204, 0, 0.7);
+}
+
+/* =======================
+   Seat States (Overrides)
+   ======================= */
+.booking-page button.locked {
+  background: #999 !important;   /* gray */
+  color: #fff !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.booking-page button.booked {
+  background: #d9534f !important; /* red */
+  color: #fff !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.booking-page button.selected {
+  background: #4caf50 !important; /* green */
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.7) !important;
 }
 
 /* Seat map & movie details layout */

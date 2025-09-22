@@ -38,7 +38,7 @@ const scheduleSchema = new mongoose.Schema(
 
 // Auto-generate seats
 scheduleSchema.pre("validate", function (next) {
-  if (this.seatCategories && this.seatCategories.length > 0) {
+  if (this.isNew && this.seatCategories && this.seatCategories.length > 0) {
     this.seatCategories = this.seatCategories.map((cat) => {
       const generatedSeats = generateSeats(cat.rows, cat.cols);
       return {
@@ -51,6 +51,7 @@ scheduleSchema.pre("validate", function (next) {
   }
   next();
 });
+
 
 // Indexes
 scheduleSchema.index({ movieId: 1, date: 1, startTime: 1 });

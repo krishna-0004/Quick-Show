@@ -1,3 +1,4 @@
+// controllers/paymentController.mjs
 import Razorpay from "razorpay";
 import { Booking } from "../models/Booking.mjs";
 import { Schedule } from "../models/Schedule.mjs";
@@ -24,13 +25,12 @@ export async function createOrder(req, res, next) {
       return res.status(400).json({ error: "Booking not in locked state" });
     }
 
-    // Recompute amount server-side to avoid tampering
     const schedule = await Schedule.findById(booking.scheduleId).lean();
     const cat = schedule.seatCategories.find((c) => c.type === booking.category);
     if (!cat) return res.status(400).json({ error: "Invalid category in booking" });
 
     const expected = cat.price * booking.seats.length;
-    if (expected !== booking.amountExpected) {
+    if (Math.abs(expected - booking.amountExpected) > 0.01) {
       booking.amountExpected = expected;
       await booking.save();
     }
@@ -61,17 +61,18 @@ export async function razorpayWebhook(req, res) {
 
     const expectedSignature = crypto
       .createHmac("sha256", secret)
-      .update(req.rawBody)
+      .update(req.body) // req.body is raw buffer
       .digest("hex");
 
     if (signature !== expectedSignature) {
       return res.status(400).json({ message: "Invalid signature" });
     }
 
-    const event = req.body;
+    const event = JSON.parse(req.body.toString());
 
-    if (event.event === "payment.captured") {
-      const { order_id, id: paymentId, amount } = event.payload.payment.entity;
+    if (event.event === "payment.captured" || event.event === "order.paid") {
+      const paymentEntity = event.payload.payment?.entity || event.payload.order?.entity;
+      const { order_id, id: paymentId, amount } = paymentEntity;
 
       const booking = await Booking.findOne({ providerOrderId: order_id });
       if (!booking) return res.status(404).json({ message: "Booking not found" });
@@ -89,5 +90,31 @@ export async function razorpayWebhook(req, res) {
   } catch (err) {
     console.error("Webhook processing error:", err);
     res.status(500).json({ message: "Webhook processing failed" });
+  }
+}
+
+// ✅ NEW: Confirm payment endpoint called from frontend
+export async function confirmPayment(req, res) {
+  try {
+    const { bookingId, paymentId } = req.body;
+    if (!bookingId || !paymentId) {
+      return res.status(400).json({ error: "bookingId and paymentId required" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+    await confirmBookingInternal({
+      bookingId,
+      userId: booking.userId,
+      amount: booking.amountExpected,
+      provider: "razorpay",
+      transactionId: paymentId,
+    });
+
+    res.json({ success: true, message: "Booking confirmed" });
+  } catch (err) {
+    console.error("Confirm payment error:", err);
+    res.status(500).json({ error: "Booking confirmation failed" });
   }
 }
