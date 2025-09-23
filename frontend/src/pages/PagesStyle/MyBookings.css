@@ -1,0 +1,216 @@
+/* =======================
+   My Bookings – Cinematic Ticket Theme (Fixed)
+   ======================= */
+.my-bookings {
+  min-height: 100vh;
+  width: 100%;
+  padding: 6rem 1rem 2rem; /* top padding for fixed navbar */
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at top, #141414, #000000);
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Page heading */
+.my-bookings h2 {
+  margin-bottom: 25px;
+  text-align: center;
+  color: #ffcc00;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+}
+
+/* Booking grid */
+.booking-list {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* =======================
+   Ticket-style Booking Card
+   ======================= */
+.booking-card {
+  background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(255, 204, 0, 0.25);
+  border-top: 3px solid #ffcc00;
+  border-bottom: 3px solid #ffcc00;
+  animation: fadeIn 0.6s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Ticket perforation lines – moved inside flow */
+.perforation {
+  width: 100%;
+  border-top: 2px dashed rgba(255, 204, 0, 0.6);
+  margin: 12px 0;
+}
+
+/* Card heading – platform name */
+.booking-card h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #ffcc00;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px rgba(255, 204, 0, 0.7);
+  margin: 0;
+}
+
+/* Movie title below platform */
+.booking-card .movie-title {
+  text-align: center;
+  font-size: 1rem;
+  color: #e6e6e6;
+  font-weight: 500;
+}
+
+/* Info rows */
+.booking-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #e6e6e6;
+  display: flex;
+  justify-content: space-between;
+}
+
+.booking-card p strong {
+  color: #ffcc00;
+  font-weight: 600;
+}
+
+/* Note under card */
+.booking-card .note {
+  font-size: 0.85rem;
+  color: #ff4d4d;
+  text-align: center;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Cancel button */
+.booking-card button {
+  margin-top: 14px;
+  padding: 10px 14px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  background: #ff3333;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+}
+
+.booking-card button:hover:not(:disabled) {
+  background: #e62e2e;
+  transform: scale(1.05);
+}
+
+.booking-card button:disabled {
+  background: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* =======================
+   Cinematic "Access Denied" message
+   ======================= */
+.cinematic-message {
+  text-align: center;
+  margin-top: 80px;
+  padding: 40px;
+  background: linear-gradient(135deg, #0f0f0f, #1e1e1e);
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 1s ease-in-out;
+  max-width: 600px;
+}
+
+.cinematic-message h1 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  color: #ff3333;
+  text-shadow: 0 0 12px rgba(255, 51, 51, 0.7);
+}
+
+.cinematic-message p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.cinematic-message .highlight {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.cinematic-message .sub-text {
+  margin-top: 12px;
+  font-style: italic;
+  color: #aaa;
+}
+
+/* =======================
+   Animations
+   ======================= */
+@keyframes fadeIn {
+  0% {opacity: 0; transform: translateY(-20px);}
+  100% {opacity: 1; transform: translateY(0);}
+}
+
+/* =======================
+   Responsive
+   ======================= */
+@media (max-width: 768px) {
+  .my-bookings h2 {
+    font-size: 1.5rem;
+  }
+  .booking-card {
+    padding: 18px;
+    max-width: 100%;
+  }
+  .booking-card h3 {
+    font-size: 1.1rem;
+  }
+  .booking-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-bookings {
+    padding: 5rem 1rem 1rem;
+  }
+  .booking-list {
+    grid-template-columns: 1fr;
+  }
+  .booking-card {
+    padding: 14px;
+  }
+  .cinematic-message {
+    padding: 24px;
+  }
+  .cinematic-message h1 {
+    font-size: 1.6rem;
+  }
+  .cinematic-message p {
+    font-size: 1rem;
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../utils/axios";
 import "../PagesStyle/BookingPage.css";
 
@@ -8,13 +8,16 @@ import SeatMap from "../../components/SeatMap";
 import MovieDetails from "../../components/MovieDetails";
 import { DateSelector, TimeSelector } from "../../components/DateTimeSelector";
 import Loader from "../../components/Loader";
+import { useAuth } from "../../context/AuthContext";
 
 const BookingPage = () => {
   const { movieId } = useParams();
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   const [movie, setMovie] = useState(null);
   const [schedules, setSchedules] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingMovie, setLoadingMovie] = useState(true);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -25,7 +28,7 @@ const BookingPage = () => {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [bookingLock, setBookingLock] = useState(null);
   const [lockCountdown, setLockCountdown] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle | pending | success | failed
+  const [paymentStatus, setPaymentStatus] = useState("idle");
 
   // Scroll to top
   useEffect(() => window.scrollTo({ top: 0, behavior: "smooth" }), []);
@@ -34,19 +37,18 @@ const BookingPage = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        setLoading(true);
+        setLoadingMovie(true);
         const { data } = await api.get(`/movie/${movieId}`);
         if (data.success) setMovie(data.movie);
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        setLoadingMovie(false);
       }
     };
     fetchMovie();
   }, [movieId]);
 
-  // Fetch schedules
   // Fetch schedules
   const fetchSchedules = async (updateSeatMap = false) => {
     try {
@@ -54,7 +56,6 @@ const BookingPage = () => {
       if (data.success) {
         setSchedules(data.schedules);
 
-        // 👇 force update seatMap immediately if needed
         if (updateSeatMap && selectedTime) {
           const updated = data.schedules.find((s) => s._id === selectedTime);
           if (updated) setSeatMap(updated.seatCategories);
@@ -65,19 +66,22 @@ const BookingPage = () => {
     }
   };
 
-
   useEffect(() => {
     fetchSchedules();
   }, [movieId]);
 
-  // Seat categories for selector
+  // Seat categories
   const seatCategories = useMemo(() => {
     const allCategories = schedules.flatMap((s) => s.seatCategories);
     const uniqueCategories = Array.from(
       new Map(
         allCategories.map((c) => [
           c.type,
-          { type: c.type, price: c.price, availableSeats: c.seats.filter(s => !s.isBooked).length }
+          {
+            type: c.type,
+            price: c.price,
+            availableSeats: c.seats.filter((s) => !s.isBooked).length,
+          },
         ])
       ).values()
     );
@@ -86,15 +90,19 @@ const BookingPage = () => {
 
   // Dates
   const availableDates = useMemo(() => {
-    const dates = schedules.map((s) => new Date(s.date).toISOString().slice(0, 10));
+    const dates = schedules.map((s) =>
+      new Date(s.date).toISOString().slice(0, 10)
+    );
     return [...new Set(dates)].sort();
   }, [schedules]);
 
-  // Times for selected date
+  // Times
   useEffect(() => {
     if (!selectedDate) return;
     const times = schedules
-      .filter((s) => new Date(s.date).toISOString().slice(0, 10) === selectedDate)
+      .filter(
+        (s) => new Date(s.date).toISOString().slice(0, 10) === selectedDate
+      )
       .map((s) => ({
         _id: s._id,
         startTime: s.startTime,
@@ -105,7 +113,7 @@ const BookingPage = () => {
     setSelectedTime(null);
   }, [selectedDate, schedules]);
 
-  // Update seat map when time or schedules change
+  // Update seat map
   useEffect(() => {
     if (!selectedTime) return;
     const schedule = schedules.find((s) => s._id === selectedTime);
@@ -117,7 +125,7 @@ const BookingPage = () => {
     }
   }, [selectedTime, schedules, selectedCategory]);
 
-  // Toggle seat selection
+  // Toggle seat
   const toggleSeat = (seatNumber) => {
     if (!seatMap) return;
     const category = seatMap.find((c) => c.type === selectedCategory);
@@ -133,6 +141,9 @@ const BookingPage = () => {
 
   // Lock seats
   const lockSeatsHandler = async () => {
+    if (!user) {
+      return alert("⚠️ Please login first to lock seats.");
+    }
     if (selectedSeats.length === 0) return alert("Select at least 1 seat.");
 
     try {
@@ -167,13 +178,12 @@ const BookingPage = () => {
     return () => clearTimeout(timer);
   }, [lockCountdown, bookingLock]);
 
-  // Handle payment
+  // Payment
   const payNow = async () => {
     if (!bookingLock) return;
     setPaymentStatus("pending");
 
     try {
-      // 1️⃣ Create Razorpay order on server
       const { data } = await api.post("/payment/create-order", {
         bookingId: bookingLock.bookingId,
       });
@@ -192,21 +202,14 @@ const BookingPage = () => {
         order_id: data.order.id,
         handler: async function (response) {
           try {
-            // 2️⃣ Confirm booking on backend
             await api.post("/payment/confirm", {
               bookingId: bookingLock.bookingId,
               paymentId: response.razorpay_payment_id,
             });
 
             setPaymentStatus("success");
-            alert("Payment successful! Booking confirmed.");
-
-            // 3️⃣ Refresh schedule to reflect booked seats
-            await fetchSchedules(true);
-
-            // Reset selection
-            setSelectedSeats([]);
-            setBookingLock(null);
+            alert("✅ Payment successful! Redirecting to My Bookings...");
+            navigate("/my-bookings"); // 🔹 redirect
           } catch (err) {
             console.error("Confirm booking failed:", err);
             setPaymentStatus("failed");
@@ -227,7 +230,8 @@ const BookingPage = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  // 🔹 Show loader while fetching movie or auth loading
+  if (loading || loadingMovie) return <Loader />;
 
   return (
     <div className="booking-page">
@@ -282,9 +286,63 @@ const BookingPage = () => {
           />
 
           <div className="booking-actions">
+            {!bookingLock && selectedSeats.length > 0 && (
+              <div className="summary-card">
+                <h3>Booking Summary (Preview)</h3>
+                <p>
+                  <strong>Seats:</strong> {selectedSeats.join(", ")}
+                </p>
+                <p>
+                  <strong>Category:</strong> {selectedCategory}
+                </p>
+                <p>
+                  <strong>Date:</strong> {selectedDate}
+                </p>
+                <p>
+                  <strong>Time:</strong>{" "}
+                  {
+                    availableTimes.find((t) => t._id === selectedTime)
+                      ?.startTime
+                  }
+                </p>
+                <p>
+                  <strong>Total:</strong> ₹
+                  {
+                    seatCategories.find((c) => c.type === selectedCategory)
+                      ?.price * selectedSeats.length
+                  }
+                </p>
+              </div>
+            )}
+
             {bookingLock ? (
               <>
-                <p>Seats locked! Time remaining: {lockCountdown}s</p>
+                <div className="summary-card locked">
+                  <h3>Booking Summary (Locked)</h3>
+                  <p>
+                    <strong>Seats:</strong> {selectedSeats.join(", ")}
+                  </p>
+                  <p>
+                    <strong>Category:</strong> {selectedCategory}
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {selectedDate}
+                  </p>
+                  <p>
+                    <strong>Time:</strong>{" "}
+                    {
+                      availableTimes.find((t) => t._id === selectedTime)
+                        ?.startTime
+                    }
+                  </p>
+                  <p>
+                    <strong>Total:</strong> ₹{bookingLock.amountExpected}
+                  </p>
+                  <p className="countdown">
+                    Time remaining: {lockCountdown}s
+                  </p>
+                </div>
+
                 <button
                   className="pay-btn"
                   onClick={payNow}

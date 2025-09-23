@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 import { Booking } from "../models/Booking.mjs";
 import { Schedule } from "../models/Schedule.mjs";
 import { confirmBookingInternal } from "./bookingController.mjs";
+import { sendBookingEmail } from "../utils/sendBookingEmail.mjs";
 import crypto from "crypto";
 
 const razorpay = new Razorpay({
@@ -101,20 +102,43 @@ export async function confirmPayment(req, res) {
       return res.status(400).json({ error: "bookingId and paymentId required" });
     }
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate({
+      path: "scheduleId",
+      populate: { path: "movieId", select: "title" },
+    }).populate("userId", "name email"); // populate email & name
+
     if (!booking) return res.status(404).json({ error: "Booking not found" });
 
     await confirmBookingInternal({
       bookingId,
-      userId: booking.userId,
+      userId: booking.userId._id,
       amount: booking.amountExpected,
       provider: "razorpay",
       transactionId: paymentId,
     });
 
-    res.json({ success: true, message: "Booking confirmed" });
+    // Send booking confirmation email
+    await sendBookingEmail({
+      email: booking.userId.email,
+      fullName: booking.userId.name || "User",
+      bookingId: booking._id,
+      movieName: booking.scheduleId.movieId.title,
+      showDateTime: booking.scheduleId.showDateTime,
+      seatType: booking.category,
+      seats: booking.seats,
+      totalAmount: booking.amountPaid,
+      transactionId: paymentId, // pass transactionId for email/template
+    });
+
+    res.json({ 
+      success: true, 
+      message: "Booking confirmed and email sent",
+      bookingId: booking._id,
+      transactionId: paymentId,
+    });
   } catch (err) {
     console.error("Confirm payment error:", err);
     res.status(500).json({ error: "Booking confirmation failed" });
   }
 }
+

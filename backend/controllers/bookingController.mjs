@@ -5,6 +5,7 @@ import { Payment } from "../models/Payment.mjs";
 import { Schedule } from "../models/Schedule.mjs";
 import { getRedis } from "../config/redis.mjs";
 import { unlockSeats } from "../utils/seatLock.mjs";
+
 import crypto from "crypto";
 
 /**
@@ -88,3 +89,64 @@ async function confirmBookingInternal({ bookingId, userId, amount, provider, tra
 }
 
 export { confirmBookingInternal };
+
+export const getUserBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      userId: req.user._id,
+      bookingStatus: "confirmed",
+    })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate({
+        path: "scheduleId",
+        populate: { path: "movieId", select: "title poster duration language" },
+      })
+      .lean();
+
+    // 🔹 Merge date + startTime → proper JS Date
+    const formatted = bookings.map((b) => {
+      if (b.scheduleId) {
+        const { date, startTime } = b.scheduleId;
+
+        if (date && startTime) {
+          const [hours, minutes] = startTime.split(":").map(Number);
+          const showDate = new Date(date); // base day
+          showDate.setHours(hours, minutes, 0, 0);
+
+          b.scheduleId.showDateTime = showDate;
+        }
+      }
+      return b;
+    });
+
+    res.json({ success: true, bookings: formatted });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Failed to fetch bookings" });
+  }
+};
+
+
+export const cancelBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate("showId");
+
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+    const showTime = new Date(booking.showId.startTime);
+    const now = new Date();
+    const diffHours = (showTime - now) / (1000 * 60 * 60);
+
+    if (diffHours < 4) {
+      return res.status(400).json({ message: "Booking cannot be cancelled within 4 hours of showtime." });
+    }
+
+    booking.status = "cancelled";
+    await booking.save();
+
+    res.json({ message: "Booking cancelled successfully", booking });
+  } catch (err) {
+    res.status(500).json({ message: "Error cancelling booking", error: err.message });
+  }
+};
