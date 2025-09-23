@@ -1,6 +1,9 @@
 // controllers/scheduleController.mjs
 import { Schedule } from "../models/Schedule.mjs";
 import { Movie } from "../models/Movie.mjs";
+import { User } from "../models/user-model.mjs";
+import { Payment } from "../models/Payment.mjs";
+import { Booking } from "../models/Booking.mjs";
 import { generateSeats } from "../utils/seatGenerator.mjs";
 
 /**
@@ -178,5 +181,115 @@ export const deleteSchedule = async (req, res) => {
   } catch (err) {
     console.error("Delete Schedule Error:", err);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getScheduleSummary = async (req, res) => {
+  try {
+    const schedules = await Schedule.find()
+      .populate("movieId", "title")
+      .lean();
+
+    const summary = await Promise.all(
+      schedules.map(async (schedule) => {
+        const bookings = await Booking.find({ scheduleId: schedule._id, bookingStatus: "confirmed" }).lean();
+        
+        // Category-wise seat counts
+        const categorySummary = schedule.seatCategories.map((cat) => {
+          const bookedSeats = bookings
+            .filter(b => b.category === cat.type)
+            .reduce((acc, b) => acc + b.seats.length, 0);
+
+          const totalAmount = bookings
+            .filter(b => b.category === cat.type)
+            .reduce((acc, b) => acc + (b.amountPaid || 0), 0);
+
+          return {
+            type: cat.type,
+            bookedSeats,
+            totalSeats: cat.totalSeats,
+            totalAmount,
+          };
+        });
+
+        return {
+          scheduleId: schedule._id,
+          movieTitle: schedule.movieId.title,
+          date: schedule.date,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          categorySummary,
+        };
+      })
+    );
+
+    res.json({ success: true, summary });
+  } catch (err) {
+    console.error("Admin Schedule Summary Error:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch schedule summary" });
+  }
+};
+
+export const getScheduleSeatMap = async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+
+    const schedule = await Schedule.findById(scheduleId).populate("movieId", "title").lean();
+    if (!schedule) return res.status(404).json({ success: false, message: "Schedule not found" });
+
+    // Fetch all bookings for this schedule
+    const bookings = await Booking.find({ scheduleId: scheduleId, bookingStatus: "confirmed" })
+      .populate("userId", "name email")
+      .lean();
+
+    const payments = await Payment.find({ bookingId: { $in: bookings.map(b => b._id) } }).lean();
+
+    // Map seats with booking info
+    const seatMap = schedule.seatCategories.map((cat) => {
+      const seatsWithBooking = cat.seats.map((seat) => {
+        // Find booking for this seat
+        const booking = bookings.find(b => b.category === cat.type && b.seats.includes(seat.seatNumber));
+        if (booking) {
+          const payment = payments.find(p => p.bookingId.toString() === booking._id.toString());
+          return {
+            seatNumber: seat.seatNumber,
+            isBooked: true,
+            booking: {
+              bookingId: booking._id,
+              user: booking.userId,
+              amountPaid: booking.amountPaid,
+              paymentId: payment?.transactionId || null,
+            },
+          };
+        } else {
+          return {
+            seatNumber: seat.seatNumber,
+            isBooked: false,
+            booking: null,
+          };
+        }
+      });
+
+      return {
+        type: cat.type,
+        price: cat.price,
+        seats: seatsWithBooking,
+      };
+    });
+
+    res.json({
+      success: true,
+      schedule: {
+        scheduleId: schedule._id,
+        movieTitle: schedule.movieId.title,
+        date: schedule.date,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        seatMap,
+      },
+    });
+  } catch (err) {
+    console.error("Admin Schedule SeatMap Error:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch seat map" });
   }
 };

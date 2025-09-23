@@ -8,7 +8,7 @@ import AdminRoute from "./components/Admin/AdminRoute";
 import DashboardLayout from "./components/Admin/DashboardLayout";
 import DashboardHome from "./pages/admin/DashboardHome";
 import AdminMovies from "./pages/admin/AdminMovies";
-import Bookings from "./pages/admin/Bookings";
+import ShowAdmin from "./pages/admin/ShowAdmin";
 import Show from "./pages/admin/Show";
 import Users from "./pages/admin/Users";
 
@@ -73,7 +73,7 @@ function App() {
             element={
               <AdminRoute>
                 <DashboardLayout>
-                  <Bookings />
+                  <ShowAdmin />
                 </DashboardLayout>
               </AdminRoute>
             }

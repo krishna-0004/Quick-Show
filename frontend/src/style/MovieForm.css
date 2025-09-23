@@ -244,3 +244,81 @@
     flex-direction: column;
   }
 }
+
+/* ===== Seat Tooltip & Seats Styling ===== */
+.seat {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: #4f46e5;
+  color: #fff;
+  font-weight: 500;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.seat:hover {
+  transform: scale(1.1);
+}
+
+.seat-booked {
+  background-color: #ef4444;
+}
+
+/* Tooltip styling */
+.seat-tooltip {
+  position: absolute;
+  bottom: 140%; /* slightly higher above the seat */
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #f9fafb;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: normal; /* allow wrapping */
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+  z-index: 10;
+  max-width: 250px; /* prevent overflow */
+  word-wrap: break-word;
+  line-height: 1.3;
+}
+
+/* Tooltip arrow */
+.seat-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #4f46e5 transparent transparent transparent;
+}
+
+/* Show tooltip on hover */
+.seat:hover .seat-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Shift tooltip dynamically to prevent cutoff */
+.seat-tooltip[data-position="left"] {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
+.seat-tooltip[data-position="right"] {
+  left: 0;
+  transform: translateX(0);
+}
+
