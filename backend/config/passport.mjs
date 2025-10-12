@@ -15,7 +15,7 @@ passport.use(
       // Google OAuth credentials (from .env)
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "http://localhost:4000/api/auth/google/callback",
     },
 
     // Verify callback (runs after Google login is successful)

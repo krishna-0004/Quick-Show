@@ -43,7 +43,10 @@ export const applySecurity = (app) => {
   // =======================
   app.use(
     cors({
-      origin: process.env.FRONTEND_URL, // only allow your frontend
+      origin: [
+        process.env.FRONTEND_URL,
+        "http://localhost:5173", // ✅ Add your live frontend domain
+      ], // only allow your frontend
       credentials: true, // allow cookies/credentials
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
@@ -88,7 +91,8 @@ export const applySecurity = (app) => {
 // =======================
 function deepXssSanitize(obj, filter) {
   if (typeof obj === "string") return filter.process(obj); // sanitize strings
-  if (Array.isArray(obj)) return obj.map((item) => deepXssSanitize(item, filter)); // sanitize arrays
+  if (Array.isArray(obj))
+    return obj.map((item) => deepXssSanitize(item, filter)); // sanitize arrays
   if (obj && typeof obj === "object") {
     const sanitized = {};
     for (const key in obj) {
