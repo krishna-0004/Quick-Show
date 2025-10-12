@@ -57,8 +57,8 @@ export const verifyRefresh = (token) => {
 // - path: "/" makes cookie accessible site-wide
 export const refreshCookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
+  secure: process.env.NODE_ENV === "production", // ✅ required for HTTPS
+  sameSite: "None", // ✅ cross-origin cookies must use 'None'
   maxAge: REFRESH_TTL_DAYS * 24 * 60 * 60 * 1000,
   path: "/",
 };
