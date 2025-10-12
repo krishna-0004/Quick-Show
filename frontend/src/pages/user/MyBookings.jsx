@@ -44,7 +44,9 @@ const MyBookings = () => {
           You must <span className="highlight">Login First</span> to view your
           bookings.
         </p>
-        <p className="sub-text">Grab your popcorn 🍿 and sign in to continue!</p>
+        <p className="sub-text">
+          Grab your popcorn 🍿 and sign in to continue!
+        </p>
       </div>
     );
   }
@@ -92,21 +94,18 @@ const MyBookings = () => {
                   <strong>Seats:</strong> {b.seats.join(", ")}
                 </p>
                 <p>
-                  <strong>Amount:</strong> ₹{b.amountPaid || b.amountExpected || "N/A"}
+                  <strong>Amount:</strong> ₹
+                  {b.amountPaid || b.amountExpected || "N/A"}
                 </p>
                 <p>
                   <strong>Status:</strong> {b.bookingStatus}
                 </p>
 
                 <p className="note">
-                  ⚠️ Cancellation allowed only until 4 hours before showtime
+                  ⚠️ Cancellations are allowed only up to 4 hours before the
+                  showtime. To cancel a ticket and receive a refund, please
+                  visit the theater at least 4 hours before the movie starts.
                 </p>
-                <button
-                  onClick={() => cancelBooking(b._id)}
-                  disabled={diffHours < 4}
-                >
-                  {diffHours < 4 ? "Cancellation Closed" : "Cancel Booking"}
-                </button>
               </div>
             );
           })
