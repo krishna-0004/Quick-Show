@@ -262,21 +262,34 @@
   }
 }
 
+/* Fix for mobile: center step-cards */
 @media (max-width: 576px) {
-  .summary-card {
-    padding: 16px;
-    font-size: 0.9rem;
+  .booking-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 🔹 vertical center */
+    align-items: center;     /* 🔹 horizontal center */
+    min-height: 100vh;
+    padding: 1rem;
   }
 
-  .summary-card h3 {
-    font-size: 1rem;
+  .booking-page > div.step-card {
+    margin: 0 auto; /* center horizontally */
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
   }
 
   .booking-page h2 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
-  .booking-main {
-    margin-top: 20px;
+  .booking-actions {
+    width: 100%;
+    align-items: center;
+  }
+
+  .booking-actions button {
+    width: 90%; /* buttons take most of the width */
   }
 }

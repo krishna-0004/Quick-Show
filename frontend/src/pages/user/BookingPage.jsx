@@ -9,6 +9,8 @@ import MovieDetails from "../../components/MovieDetails";
 import { DateSelector, TimeSelector } from "../../components/DateTimeSelector";
 import Loader from "../../components/Loader";
 import { useAuth } from "../../context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BookingPage = () => {
   const { movieId } = useParams();
@@ -42,6 +44,7 @@ const BookingPage = () => {
         if (data.success) setMovie(data.movie);
       } catch (err) {
         console.error(err);
+        toast.error("Failed to load movie details.");
       } finally {
         setLoadingMovie(false);
       }
@@ -63,6 +66,7 @@ const BookingPage = () => {
       }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to load schedules.");
     }
   };
 
@@ -142,9 +146,13 @@ const BookingPage = () => {
   // Lock seats
   const lockSeatsHandler = async () => {
     if (!user) {
-      return alert("⚠️ Please login first to lock seats.");
+      toast.warning("⚠️ Please login first to lock seats.");
+      return;
     }
-    if (selectedSeats.length === 0) return alert("Select at least 1 seat.");
+    if (selectedSeats.length === 0) {
+      toast.info("Select at least 1 seat.");
+      return;
+    }
 
     try {
       const { data } = await api.post("/booking/lock", {
@@ -159,10 +167,10 @@ const BookingPage = () => {
         expiresAt: Date.now() + data.expiresInSec * 1000,
       });
       setLockCountdown(data.expiresInSec);
-      alert("Seats locked! Complete payment within time limit.");
+      toast.success("Seats locked! Complete payment within time limit.");
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.error || "Failed to lock seats.");
+      toast.error(err.response?.data?.error || "Failed to lock seats.");
     }
   };
 
@@ -189,7 +197,7 @@ const BookingPage = () => {
       });
 
       if (!window.Razorpay) {
-        alert("Razorpay SDK failed to load.");
+        toast.error("Razorpay SDK failed to load.");
         setPaymentStatus("failed");
         return;
       }
@@ -208,12 +216,12 @@ const BookingPage = () => {
             });
 
             setPaymentStatus("success");
-            alert("✅ Payment successful! Redirecting to My Bookings...");
-            navigate("/my-bookings"); // 🔹 redirect
+            toast.success("✅ Payment successful! Redirecting to My Bookings...");
+            navigate("/my-bookings");
           } catch (err) {
             console.error("Confirm booking failed:", err);
             setPaymentStatus("failed");
-            alert(
+            toast.error(
               "Payment succeeded, but booking confirmation failed. Contact support."
             );
           }
@@ -226,15 +234,16 @@ const BookingPage = () => {
     } catch (err) {
       console.error(err);
       setPaymentStatus("failed");
-      alert("Payment failed. Try again.");
+      toast.error("Payment failed. Try again.");
     }
   };
 
-  // 🔹 Show loader while fetching movie or auth loading
   if (loading || loadingMovie) return <Loader />;
 
   return (
     <div className="booking-page">
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {!selectedCategory && seatCategories.length > 0 && (
         <div className="step-card">
           <h2>Select Seat Type</h2>
@@ -338,9 +347,7 @@ const BookingPage = () => {
                   <p>
                     <strong>Total:</strong> ₹{bookingLock.amountExpected}
                   </p>
-                  <p className="countdown">
-                    Time remaining: {lockCountdown}s
-                  </p>
+                  <p className="countdown">Time remaining: {lockCountdown}s</p>
                 </div>
 
                 <button
