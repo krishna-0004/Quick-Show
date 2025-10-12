@@ -137,3 +137,9 @@
     font-size: 0.7rem;
   }
 }
+.footer-bottom .dev-credit {
+  margin-top: 0.25rem;
+  font-style: italic;
+  color: #ffcc00;
+  text-shadow: 0 0 3px #ffcc00;
+}

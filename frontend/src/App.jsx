@@ -17,6 +17,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/user/HomePage";
 import BookingPage from "./pages/user/BookingPage";
 import MyBookings from "./pages/user/MyBookings";
+import AboutUs from "./pages/user/AboutUs";
+import Contact from "./pages/user/Contact";
 import Footer from "./components/Footer";
 
 const Movies = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Movies Page</h1>;
@@ -28,7 +30,8 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/movies" element={<Movies />} />
+          <Route path="/about" element={<AboutUs />} /> 
+          <Route path="/contact" element={<Contact />} /> 
           <Route
             path="/book/:movieId"
             element={

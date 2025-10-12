@@ -1,11 +1,10 @@
 import React from "react";
-import "../style/Footer.css"
+import "../style/Footer.css";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
-        
         {/* Left Section */}
         <div className="footer-logo">
           <h2>Quick Show</h2>
@@ -17,7 +16,6 @@ const Footer = () => {
           <h4>Quick Links</h4>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/movies">Movies</a></li>
             <li><a href="/about">About Us</a></li>
             <li><a href="/contact">Contact</a></li>
           </ul>
@@ -37,6 +35,7 @@ const Footer = () => {
 
       <div className="footer-bottom">
         <p>© {new Date().getFullYear()} Quick Show. All Rights Reserved.</p>
+        <p className="dev-credit">Developed by Web-Flex</p>
       </div>
     </footer>
   );

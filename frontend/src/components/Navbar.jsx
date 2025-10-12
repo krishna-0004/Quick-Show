@@ -39,11 +39,11 @@ const Navbar = () => {
               <NavLink to="/" className="nav-link">
                 Home
               </NavLink>
-              <NavLink to="/movies" className="nav-link">
-                Movies
+              <NavLink to="/about" className="nav-link">
+                About Us
               </NavLink>
-              <NavLink to="/booking" className="nav-link">
-                Booking
+              <NavLink to="/my-bookings" className="nav-link">
+                My Booking
               </NavLink>
               {isAdmin?.() && (
                 <NavLink to="/admin" className="nav-link">
@@ -102,13 +102,13 @@ const Navbar = () => {
             <span>🏠</span>
             <span>Home</span>
           </NavLink>
-          <NavLink to="/movies" className="bottom-link">
-            <span>🎬</span>
-            <span>Movies</span>
+          <NavLink to="/about" className="bottom-link">
+            <span>👥</span>
+            <span>About Us</span>
           </NavLink>
-          <NavLink to="/booking" className="bottom-link">
+          <NavLink to="/my-bookings" className="bottom-link">
             <span>🎟️</span>
-            <span>Booking</span>
+            <span>My Booking</span>
           </NavLink>
           {isAdmin?.() && (
             <NavLink to="/admin" className="bottom-link">
