@@ -95,6 +95,7 @@ export async function razorpayWebhook(req, res) {
 }
 
 // ✅ NEW: Confirm payment endpoint called from frontend
+// ✅ NEW: Confirm payment endpoint called from frontend
 export async function confirmPayment(req, res) {
   try {
     const { bookingId, paymentId } = req.body;
@@ -117,7 +118,8 @@ export async function confirmPayment(req, res) {
       transactionId: paymentId,
     });
 
-    // Send booking confirmation email
+    // Commented out email sending for now
+    /*
     await sendBookingEmail({
       email: booking.userId.email,
       fullName: booking.userId.name || "User",
@@ -129,10 +131,11 @@ export async function confirmPayment(req, res) {
       totalAmount: booking.amountPaid,
       transactionId: paymentId, // pass transactionId for email/template
     });
+    */
 
     res.json({ 
       success: true, 
-      message: "Booking confirmed and email sent",
+      message: "Booking confirmed", // removed "email sent"
       bookingId: booking._id,
       transactionId: paymentId,
     });
@@ -141,4 +144,5 @@ export async function confirmPayment(req, res) {
     res.status(500).json({ error: "Booking confirmation failed" });
   }
 }
+
 
