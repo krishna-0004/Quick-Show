@@ -3,25 +3,20 @@ import passport from "./config/passport.mjs";
 import { applySecurity } from "./middlewares/security.mjs";
 import { globalLimiter } from "./middlewares/rateLimit.mjs";
 
-import healthRoutes from "./routes/health.mjs";
-import authRoutes from "./routes/authRoutes.mjs";
-import moviesRoutes from "./routes/movieRouter.mjs";
-import scheduleRouter from "./routes/scheduleRoutes.mjs";
-import bookingRouter from "./routes/bookingRouter.mjs";
-import paymentRouter from "./routes/paymentRouter.mjs";
-import adminRouter from "./routes/adminRouter.mjs";
-
 const app = express();
 
-// Security middleware
+// ======= Trust proxy =======
+app.set("trust proxy", 1); // important for deployed environment
+
+// ======= Security middlewares =======
 applySecurity(app);
 
-// ⚠️ Razorpay webhook raw body
+// ======= Razorpay raw body =======
 app.use(
   "/api/payment/razorpay/webhook",
   express.raw({ type: "application/json" }),
   (req, _res, next) => {
-    req.rawBody = req.body; // save the raw buffer for signature verification
+    req.rawBody = req.body;
     next();
   }
 );
@@ -32,10 +27,18 @@ app.use(express.json({ limit: "200kb" }));
 // Passport
 app.use(passport.initialize());
 
-// Global rate limiter
+// ======= Global Rate Limiter =======
 app.use("/api", globalLimiter);
 
-// Routes
+// ======= Routes =======
+import healthRoutes from "./routes/health.mjs";
+import authRoutes from "./routes/authRoutes.mjs";
+import moviesRoutes from "./routes/movieRouter.mjs";
+import scheduleRouter from "./routes/scheduleRoutes.mjs";
+import bookingRouter from "./routes/bookingRouter.mjs";
+import paymentRouter from "./routes/paymentRouter.mjs";
+import adminRouter from "./routes/adminRouter.mjs";
+
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/movie", moviesRoutes);
