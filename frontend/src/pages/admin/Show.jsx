@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../style/MovieForm.css";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
+import { formatTo12Hour } from "../../utils/time";
 
 const Show = () => {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -92,7 +93,7 @@ const Show = () => {
       </div>
 
       {loading ? (
-        <p>Loading schedules...</p>
+        <Loader />
       ) : schedules.length === 0 ? (
         <p className="no-data">No schedules found</p>
       ) : (
@@ -112,16 +113,13 @@ const Show = () => {
               <tr key={s._id}>
                 <td>{s.movieId?.title}</td>
                 <td>{new Date(s.date).toLocaleDateString()}</td>
-                <td>{s.startTime}</td>
-                <td>{s.endTime}</td>
-
-                {/* ✅ Seats column */}
+                <td>{formatTo12Hour(s.startTime)}</td>
+                <td>{formatTo12Hour(s.endTime)}</td>
                 <td>
                   {s.seatCategories
                     .map((c) => `${c.type}: ${c.totalSeats}`)
                     .join(", ")}
                 </td>
-
                 <td>
                   <button onClick={() => handleEdit(s)} className="btn-edit">
                     ✏️ Edit
@@ -134,7 +132,6 @@ const Show = () => {
                   </button>
                 </td>
               </tr>
-
             ))}
           </tbody>
         </table>

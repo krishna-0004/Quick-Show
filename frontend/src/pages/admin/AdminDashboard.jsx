@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
 import "../PagesStyle/AdminDashboard.css";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
+import { formatTo12Hour } from "../../utils/time";
 
 const AdminDashboard = () => {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -111,6 +112,7 @@ const AdminDashboard = () => {
       setLoadingSeatMap(false);
     }
   };
+
   useEffect(() => {
     if (isAdmin()) {
       fetchSummary();
@@ -142,15 +144,17 @@ const AdminDashboard = () => {
 
       {/* Tabs */}
       <div className="dashboard-tabs">
-        {["summary", "schedules", "bookings", "payments", "users"].map((tab) => (
-          <button
-            key={tab}
-            className={`tab-btn ${activeTab === tab ? "active" : ""}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
+        {["summary", "schedules", "bookings", "payments", "users"].map(
+          (tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          )
+        )}
       </div>
 
       {/* Tab Content */}
@@ -165,8 +169,14 @@ const AdminDashboard = () => {
                 { title: "🎥 Total Movies", value: summary?.totalMovies ?? 0 },
                 { title: "🕒 Total Shows", value: summary?.totalShows ?? 0 },
                 { title: "👥 Total Users", value: summary?.totalUsers ?? 0 },
-                { title: "🎟️ Total Bookings", value: summary?.totalBookings ?? 0 },
-                { title: "💺 Seats Booked", value: summary?.totalSeatsBooked ?? 0 },
+                {
+                  title: "🎟️ Total Bookings",
+                  value: summary?.totalBookings ?? 0,
+                },
+                {
+                  title: "💺 Seats Booked",
+                  value: summary?.totalSeatsBooked ?? 0,
+                },
                 {
                   title: "💰 Total Revenue",
                   value: summary?.totalRevenue ?? 0,
@@ -221,8 +231,8 @@ const AdminDashboard = () => {
                     <tr key={s._id}>
                       <td>{s.movieTitle}</td>
                       <td>{new Date(s.date).toLocaleDateString()}</td>
-                      <td>{s.startTime}</td>
-                      <td>{s.endTime}</td>
+                      <td>{formatTo12Hour(s.startTime)}</td>
+                      <td>{formatTo12Hour(s.endTime)}</td>
                       <td>{s.totalSeats}</td>
                       <td>{s.bookedSeats}</td>
                       <td>₹{s.totalRevenue.toLocaleString()}</td>
@@ -269,7 +279,11 @@ const AdminDashboard = () => {
                       <td>{b.email}</td>
                       <td>{b.movie}</td>
                       <td>{new Date(b.date).toLocaleDateString()}</td>
-                      <td>{b.time}</td>
+                      <td>
+                        {formatTo12Hour(b.startTime)} -{" "}
+                        {formatTo12Hour(b.endTime)}
+                      </td>
+
                       <td>{b.seats.join(", ")}</td>
                       <td>{b.category}</td>
                       <td>₹{b.amount.toLocaleString()}</td>
@@ -354,13 +368,10 @@ const AdminDashboard = () => {
       {/* SEAT MAP MODAL */}
       {seatMapModal && (
         <div className="modal-overlay" onClick={() => setSeatMapModal(null)}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>🎞 {seatMapModal.movieTitle}</h3>
             <p>
-              {seatMapModal.date} | {seatMapModal.showTime}
+              {seatMapModal.date} | {formatTo12Hour(seatMapModal.showTime)}
             </p>
             {loadingSeatMap ? (
               <Loader />
@@ -394,10 +405,7 @@ const AdminDashboard = () => {
                 </table>
               </div>
             )}
-            <button
-              className="close-btn"
-              onClick={() => setSeatMapModal(null)}
-            >
+            <button className="close-btn" onClick={() => setSeatMapModal(null)}>
               Close
             </button>
           </div>

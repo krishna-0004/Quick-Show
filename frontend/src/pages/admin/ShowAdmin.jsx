@@ -1,3 +1,4 @@
+// src/pages/Admin/ShowAdmin.jsx
 import React, { useEffect, useState } from "react";
 import { api } from "../../utils/axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -5,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../style/MovieForm.css";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader";
+import { formatTo12Hour } from "../../utils/time";
 
 const ShowAdmin = () => {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -81,7 +83,7 @@ const ShowAdmin = () => {
       </div>
 
       {loading ? (
-        <p>Loading schedules...</p>
+        <Loader />
       ) : schedules.length === 0 ? (
         <p className="no-data">No schedules found</p>
       ) : (
@@ -101,8 +103,8 @@ const ShowAdmin = () => {
               <tr key={s.scheduleId}>
                 <td>{s.movieTitle}</td>
                 <td>{new Date(s.date).toLocaleDateString()}</td>
-                <td>{s.startTime}</td>
-                <td>{s.endTime}</td>
+                <td>{formatTo12Hour(s.startTime)}</td>
+                <td>{formatTo12Hour(s.endTime)}</td>
                 <td>
                   {s.categorySummary
                     .map(
@@ -132,7 +134,8 @@ const ShowAdmin = () => {
             <h3>Seat Map - {seatMapData.movieTitle}</h3>
             <p>
               {new Date(seatMapData.date).toLocaleDateString()} (
-              {seatMapData.startTime} - {seatMapData.endTime})
+              {formatTo12Hour(seatMapData.startTime)} -{" "}
+              {formatTo12Hour(seatMapData.endTime)})
             </p>
 
             {seatMapData.seatMap.map((cat) => (

@@ -44,7 +44,9 @@ export const getDashboardSummary = async (req, res) => {
     });
   } catch (error) {
     console.error("Dashboard summary error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch summary" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch summary" });
   }
 };
 
@@ -123,7 +125,9 @@ export const getSchedules = async (req, res) => {
     res.json({ success: true, schedules });
   } catch (error) {
     console.error("Schedule summary error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch schedules" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch schedules" });
   }
 };
 
@@ -136,7 +140,9 @@ export const getSeatMapDetails = async (req, res) => {
       .lean();
 
     if (!schedule) {
-      return res.status(404).json({ success: false, message: "Schedule not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
     }
 
     // ✅ Get confirmed bookings with user details
@@ -184,7 +190,9 @@ export const getSeatMapDetails = async (req, res) => {
     });
   } catch (error) {
     console.error("Seat map fetch error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch seat map" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch seat map" });
   }
 };
 /* -------------------------------------------------------------------------- */
@@ -206,7 +214,8 @@ export const getBookings = async (req, res) => {
       email: b.userId?.email,
       movie: b.scheduleId?.movieId?.title || "Deleted Movie",
       date: b.scheduleId?.date,
-      time: `${b.scheduleId?.startTime} - ${b.scheduleId?.endTime}`,
+      startTime: b.scheduleId?.startTime,
+      endTime: b.scheduleId?.endTime,
       category: b.category,
       seats: b.seats,
       amount: b.amountPaid,
@@ -217,7 +226,9 @@ export const getBookings = async (req, res) => {
     res.json({ success: true, bookings: formatted });
   } catch (error) {
     console.error("Booking fetch error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch bookings" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch bookings" });
   }
 };
 
@@ -251,7 +262,9 @@ export const getPayments = async (req, res) => {
     res.json({ success: true, payments: formatted });
   } catch (error) {
     console.error("Payment fetch error:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch payments" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch payments" });
   }
 };
 
@@ -317,7 +330,9 @@ export const toggleMovieBookingStatus = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie)
-      return res.status(404).json({ success: false, message: "Movie not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Movie not found" });
 
     movie.bookingStatus = movie.bookingStatus === "open" ? "closed" : "open";
     await movie.save();
@@ -331,6 +346,8 @@ export const toggleMovieBookingStatus = async (req, res) => {
     });
   } catch (error) {
     console.error("Toggle booking status error:", error);
-    res.status(500).json({ success: false, message: "Failed to update movie status" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update movie status" });
   }
 };
