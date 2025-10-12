@@ -9,6 +9,7 @@ import moviesRoutes from "./routes/movieRouter.mjs";
 import scheduleRouter from "./routes/scheduleRoutes.mjs";
 import bookingRouter from "./routes/bookingRouter.mjs";
 import paymentRouter from "./routes/paymentRouter.mjs";
+import adminRouter from "./routes/adminRouter.mjs";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/movie", moviesRoutes);
 app.use("/api/show", scheduleRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/payment", paymentRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/", (_req, res) => res.send("Quick Show API 🟢"));
 

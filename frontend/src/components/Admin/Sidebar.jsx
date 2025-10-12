@@ -12,7 +12,6 @@ const Sidebar = () => {
                 <NavLink to="/admin/movies" >Movies</NavLink>
                 <NavLink to="/admin/show" >Shows</NavLink>
                 <NavLink to="/admin/booking" >Bookings</NavLink>
-                <NavLink to="/admin/users" >Users</NavLink>
             </nav>
         </aside>
     </div>

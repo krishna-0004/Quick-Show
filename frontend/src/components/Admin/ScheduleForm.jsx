@@ -12,8 +12,8 @@ const ScheduleForm = ({ schedule, movies, onClose, onSuccess }) => {
     startTime: schedule?.startTime || "",
     endTime: schedule?.endTime || "",
     seatCategories: schedule?.seatCategories || [
-      { type: "prime", price: 300, rows: 5, cols: 8 },
-      { type: "classic", price: 200, rows: 5, cols: 10 },
+      { type: "prime", price: 100, rows: 4, cols: 16 },
+      { type: "classic", price: 80, rows: 10, cols: 10 },
     ],
   });
 
@@ -144,7 +144,7 @@ const ScheduleForm = ({ schedule, movies, onClose, onSuccess }) => {
                   onChange={(e) =>
                     handleSeatChange(i, "rows", e.target.value)
                   }
-                  placeholder="Rows (e.g., 5)"
+                  placeholder="Rows (e.g., 4)"
                 />
                 <input
                   type="number"
@@ -152,7 +152,7 @@ const ScheduleForm = ({ schedule, movies, onClose, onSuccess }) => {
                   onChange={(e) =>
                     handleSeatChange(i, "cols", e.target.value)
                   }
-                  placeholder="Cols (e.g., 8)"
+                  placeholder="Cols (e.g., 16)"
                 />
               </div>
             </div>

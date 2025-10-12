@@ -6,11 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AdminRoute from "./components/Admin/AdminRoute";
 import DashboardLayout from "./components/Admin/DashboardLayout";
-import DashboardHome from "./pages/admin/DashboardHome";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMovies from "./pages/admin/AdminMovies";
 import ShowAdmin from "./pages/admin/ShowAdmin";
 import Show from "./pages/admin/Show";
-import Users from "./pages/admin/Users";
 
 
 import Navbar from "./components/Navbar";
@@ -53,7 +52,7 @@ function App() {
             element={
               <AdminRoute>
                 <DashboardLayout>
-                  <DashboardHome />
+                  <AdminDashboard />
                 </DashboardLayout>
               </AdminRoute>
             }
@@ -84,16 +83,6 @@ function App() {
               <AdminRoute>
                 <DashboardLayout>
                   <Show />
-                </DashboardLayout>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <AdminRoute>
-                <DashboardLayout>
-                  <Users />
                 </DashboardLayout>
               </AdminRoute>
             }
