@@ -6,10 +6,8 @@ export const sendBookingEmail = async ({
   fullName,
   bookingId,
   movieName,
-  showDateTime,
   seatType,
   seats,
-  totalAmount,
   transactionId,
 }) => {
   const transporter = nodemailer.createTransport({
@@ -27,10 +25,8 @@ export const sendBookingEmail = async ({
 Booking ID: ${bookingId}
 Transaction ID: ${transactionId}
 Movie: ${movieName}
-Show: ${new Date(showDateTime).toLocaleString()}
 Seat Type: ${seatType}
-Seats: ${seatsList}
-Amount Paid: ₹${totalAmount}`;
+Seats: ${seatsList}`;
 
   const qrBuffer = await QRCode.toBuffer(qrData, { width: 200 });
 
@@ -47,10 +43,8 @@ Amount Paid: ₹${totalAmount}`;
         <p><strong>Transaction ID:</strong> ${transactionId}</p>
         <p><strong>Name:</strong> ${fullName}</p>
         <p><strong>Movie:</strong> ${movieName}</p>
-        <p><strong>Show Time:</strong> ${new Date(showDateTime).toLocaleString()}</p>
         <p><strong>Seat Type:</strong> ${seatType}</p>
         <p><strong>Seats:</strong> ${seatsList}</p>
-        <p><strong>Amount Paid:</strong> ₹${totalAmount}</p>
 
         <div style="margin:20px 0; border-top:2px dashed #ffcc00;"></div>
 
