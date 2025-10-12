@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../utils/axios";
 import "../PagesStyle/BookingPage.css";
+import { formatTo12Hour } from "../../utils/time";
 
 import SeatTypeSelector from "../../components/SeatTypeSelector";
 import SeatMap from "../../components/SeatMap";
@@ -216,7 +217,9 @@ const BookingPage = () => {
             });
 
             setPaymentStatus("success");
-            toast.success("✅ Payment successful! Redirecting to My Bookings...");
+            toast.success(
+              "✅ Payment successful! Redirecting to My Bookings..."
+            );
             navigate("/my-bookings");
           } catch (err) {
             console.error("Confirm booking failed:", err);
@@ -282,9 +285,9 @@ const BookingPage = () => {
           <MovieDetails
             movie={movie}
             selectedDate={selectedDate}
-            selectedTime={
+            selectedTime={formatTo12Hour(
               availableTimes.find((t) => t._id === selectedTime)?.startTime
-            }
+            )}
           />
 
           <SeatMap
@@ -309,17 +312,20 @@ const BookingPage = () => {
                 </p>
                 <p>
                   <strong>Time:</strong>{" "}
-                  {
+                  {formatTo12Hour(
                     availableTimes.find((t) => t._id === selectedTime)
                       ?.startTime
-                  }
+                  )}{" "}
+                  -{" "}
+                  {formatTo12Hour(
+                    availableTimes.find((t) => t._id === selectedTime)?.endTime
+                  )}
                 </p>
+
                 <p>
                   <strong>Total:</strong> ₹
-                  {
-                    seatCategories.find((c) => c.type === selectedCategory)
-                      ?.price * selectedSeats.length
-                  }
+                  {seatCategories.find((c) => c.type === selectedCategory)
+                    ?.price * selectedSeats.length}
                 </p>
               </div>
             )}
@@ -339,11 +345,17 @@ const BookingPage = () => {
                   </p>
                   <p>
                     <strong>Time:</strong>{" "}
-                    {
+                    {formatTo12Hour(
                       availableTimes.find((t) => t._id === selectedTime)
                         ?.startTime
-                    }
+                    )}{" "}
+                    -{" "}
+                    {formatTo12Hour(
+                      availableTimes.find((t) => t._id === selectedTime)
+                        ?.endTime
+                    )}
                   </p>
+
                   <p>
                     <strong>Total:</strong> ₹{bookingLock.amountExpected}
                   </p>

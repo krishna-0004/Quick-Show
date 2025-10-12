@@ -1,6 +1,7 @@
 // src/components/Booking/DateTimeSelector.jsx
 import React from "react";
 import "../style/DateTimeSelector.css";
+import { formatTo12Hour } from "../utils/time";
 
 export const DateSelector = ({ availableDates, selectedDate, onSelect }) => (
   <div className="date-selector">
@@ -24,7 +25,7 @@ export const TimeSelector = ({ availableTimes, selectedTime, onSelect }) => (
         className={`time-btn ${selectedTime === time._id ? "active" : ""}`}
         onClick={() => onSelect(time._id)}
       >
-        {time.startTime} - {time.endTime}
+        {formatTo12Hour(time.startTime)} - {formatTo12Hour(time.endTime)}
       </button>
     ))}
   </div>
