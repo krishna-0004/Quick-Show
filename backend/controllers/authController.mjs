@@ -28,23 +28,14 @@ const REFRESH_TTL_SEC = Math.floor(
 // OAuth Success Callback
 // =======================
 export const oauthSuccess = async (req, res) => {
-  // req.user is set by Passport
-  let user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(401).json({ message: "User not found" });
 
-  if (!user) {
-    return res.status(401).json({ message: "User not found after OAuth" });
-  }
-
-  // 🔑 Assign role (hardcoded admin email)
-  if (user.email === "krishnakadukar004@gmail.com") {
-    user.role = "admin";
-  } else {
-    user.role = "user";
-  }
+  user.role = user.email === "krishnakadukar004@gmail.com" ? "admin" : "user";
   await user.save();
 
   const jti = randomUUID();
-  const accessToken = signAccessToken(user); // now includes role
+  const accessToken = signAccessToken(user);
   const refreshToken = signRefreshToken(user, jti);
 
   await saveRefreshRecord(user._id.toString(), jti, REFRESH_TTL_SEC, {
@@ -53,10 +44,15 @@ export const oauthSuccess = async (req, res) => {
     createdAt: Date.now(),
   });
 
+  // Keep refresh cookie (works where allowed)
   res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
-  return res.redirect(`${process.env.FRONTEND_URL}/`);
+  // ✅ SEND ACCESS TOKEN VIA REDIRECT
+  return res.redirect(
+    `${process.env.FRONTEND_URL}/oauth-success?token=${accessToken}`
+  );
 };
+
 
 // =======================
 // Current User Endpoint

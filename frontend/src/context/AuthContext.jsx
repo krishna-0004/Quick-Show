@@ -12,26 +12,23 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const init = async () => {
             try {
-                // 1. Call refresh
                 const refreshRes = await api.post("/auth/refresh");
                 if (refreshRes.data?.accessToken) {
-                    store.setAccessToken(refreshRes.data.accessToken); // ✅ Save it
+                    store.setAccessToken(refreshRes.data.accessToken);
                 }
 
-                // 2. Then load profile
                 const res = await api.get("/auth/me");
                 setUser(res.data.user);
-            } catch (err) {
-                if (err.response?.status !== 401) {
-                    console.error("Init auth error:", err);
-                }
+            } catch {
                 setUser(null);
             } finally {
                 setLoading(false);
             }
         };
+
         init();
     }, []);
+
 
 
 
