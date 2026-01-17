@@ -49,7 +49,7 @@ export const oauthSuccess = async (req, res) => {
 
   // ✅ SEND ACCESS TOKEN VIA REDIRECT
   return res.redirect(
-    `${process.env.FRONTEND_URL}/oauth-success?token=${accessToken}`
+    `${process.env.FRONTEND_URL}/#accessToken=${accessToken}`
   );
 };
 

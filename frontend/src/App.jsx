@@ -21,7 +21,7 @@ import AboutUs from "./pages/user/AboutUs";
 import Contact from "./pages/user/Contact";
 import Footer from "./components/Footer";
 
-import OAuthSuccess from "./pages/OAuthSuccess";
+// import OAuthSuccess from "./pages/OAuthSuccess";
 
 const Movies = () => <h1 style={{ paddingTop: "80px", textAlign: "center" }}>Movies Page</h1>;
 
@@ -31,7 +31,7 @@ function App() {
       <Navbar />
       <div>
         <Routes>
-          <Route path="/oauth-success" element={<OAuthSuccess />} />
+          {/* <Route path="/oauth-success" element={<OAuthSuccess />} /> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutUs />} /> 
           <Route path="/contact" element={<Contact />} /> 

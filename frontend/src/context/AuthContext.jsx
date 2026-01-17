@@ -8,6 +8,38 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const init = async () => {
+            try {
+                // ✅ 0. Check token from URL hash (OAuth redirect)
+                const hash = window.location.hash;
+                if (hash.startsWith("#accessToken=")) {
+                    const token = hash.replace("#accessToken=", "");
+                    store.setAccessToken(token);
+
+                    // Clean URL
+                    window.history.replaceState({}, document.title, "/");
+                }
+
+                // 1. Try refresh
+                const refreshRes = await api.post("/auth/refresh");
+                if (refreshRes.data?.accessToken) {
+                    store.setAccessToken(refreshRes.data.accessToken);
+                }
+
+                // 2. Load profile
+                const res = await api.get("/auth/me");
+                setUser(res.data.user);
+            } catch {
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        init();
+    }, []);
+
     // on mount -> try refresh -> then fetch /me
     useEffect(() => {
         const init = async () => {
